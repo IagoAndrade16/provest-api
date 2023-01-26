@@ -4,7 +4,7 @@
   "port": 5432,
   "user": "pedro",
   "password": "senhasupersecreta",
-  "database": "fitAPI",
+  "database": "provest",
   "migrations": ["./src/infra/database/migrations/*.ts"],
   "cli": {
     "migrationsDir": "./src/infra/database/migrations"

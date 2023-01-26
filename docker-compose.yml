@@ -1,16 +1,16 @@
 version: "3.7"
 
 services:
-  fit_api_database:
+  provest-database:
     image: postgres
-    container_name: fit_api_database
+    container_name: provest-database
     restart: always
     ports: 
       - 5432:5432
     environment:
       - POSTGRES_USER=pedro
       - POSTGRES_PASSWORD=senhasupersecreta
-      - POSTGRES_DB=fitAPI
+      - POSTGRES_DB=provest
     volumes:
       - pgdata:/data/postgres
 
