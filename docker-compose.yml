@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  fit_api_database:
+    image: postgres
+    container_name: fit_api_database
+    restart: always
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=iago
+      - POSTGRES_PASSWORD=senhasupersecreta
+      - POSTGRES_DB=fitAPI
+    volumes:
+      - pgdata:/data/postgres
+
+volumes:
+  pgdata:
+    driver: local
