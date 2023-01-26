@@ -1,6 +1,7 @@
-import express, { Request, Response } from "express";
+import express from "express";
 
 import { router } from "../domain/routes/index";
+import "./database";
 
 const app = express();
 app.use(express.json());

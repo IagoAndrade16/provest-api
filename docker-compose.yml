@@ -8,7 +8,7 @@ services:
     ports: 
       - 5432:5432
     environment:
-      - POSTGRES_USER=iago
+      - POSTGRES_USER=pedro
       - POSTGRES_PASSWORD=senhasupersecreta
       - POSTGRES_DB=fitAPI
     volumes:
