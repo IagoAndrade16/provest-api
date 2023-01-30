@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 
+import { DomainError } from "../../../errors/DomainError";
 import { IUsersRepository } from "../repositories/IUsersRepository";
 
 interface IRequest {
@@ -16,6 +17,11 @@ class CreateUserUseCase {
   ) {}
 
   async execute({ name, password, email }: IRequest): Promise<void> {
+    const userAlreadyExists = await this.usersRepository.findByEmail(email);
+    if (userAlreadyExists) {
+      throw new DomainError("Email already exists", 400);
+    }
+
     await this.usersRepository.create({ name, password, email });
   }
 }
