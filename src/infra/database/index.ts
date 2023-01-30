@@ -1,11 +1,13 @@
-// import { DataSource } from "typeorm";
+import { Connection, createConnection, getConnectionOptions } from "typeorm";
 
-// const dataSource = new DataSource({
-//   type: "postgres",
-//   host: "fit_api_database",
-//   username: "pedro",
-//   port: 5432,
-//   password: "senhasupersecreta",
-//   database: "fitAPI",
-// });
-// dataSource.initialize();
+export default async (): Promise<Connection> => {
+  const defaultOptions = await getConnectionOptions();
+
+  return createConnection(
+    Object.assign(defaultOptions, {
+      host: "localhost",
+      database:
+        process.env.NODE_ENV === "test" ? "provest" : defaultOptions.database,
+    })
+  );
+};

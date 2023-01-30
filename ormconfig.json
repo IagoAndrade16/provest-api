@@ -6,6 +6,7 @@
   "password": "senhasupersecreta",
   "database": "provest",
   "migrations": ["./src/infra/database/migrations/*.ts"],
+  "entities": ["./src/domain/modules/**/entities/*.ts"],
   "cli": {
     "migrationsDir": "./src/infra/database/migrations"
   }
