@@ -1,3 +1,3 @@
-# Fit-API
+# Provest API
 
-An API for Gyms in Node JS.
+A back-end for a older project that I make a few years ago
