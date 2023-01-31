@@ -1,6 +1,8 @@
 import { inject, injectable } from "tsyringe";
+import "reflect-metadata";
 
 import { DomainError } from "../../../errors/DomainError";
+import { User } from "../entities/User";
 import { IUsersRepository } from "../repositories/IUsersRepository";
 
 interface IRequest {
@@ -16,13 +18,20 @@ class CreateUserUseCase {
     private usersRepository: IUsersRepository
   ) {}
 
-  async execute({ name, password, email }: IRequest): Promise<void> {
+  async execute({ name, password, email }: IRequest): Promise<User> {
     const userAlreadyExists = await this.usersRepository.findByEmail(email);
+
     if (userAlreadyExists) {
-      throw new DomainError("Email already exists", 400);
+      throw new DomainError("Email already exists!", 400);
     }
 
-    await this.usersRepository.create({ name, password, email });
+    if (!name || !password || !email) {
+      throw new DomainError("name, email or password is missing!", 400);
+    }
+
+    const user = await this.usersRepository.create({ name, password, email });
+
+    return user;
   }
 }
 

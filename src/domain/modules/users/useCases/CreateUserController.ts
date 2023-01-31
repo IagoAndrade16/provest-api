@@ -8,15 +8,13 @@ class CreateUserController {
     const { name, password, email } = req.body;
     const createUserUseCase = container.resolve(CreateUserUseCase);
 
-    await createUserUseCase.execute({
+    const user = await createUserUseCase.execute({
       name,
       password,
       email,
     });
 
-    return res.status(201).send({
-      message: "USER_CREATED",
-    });
+    return res.status(201).send(user);
   }
 }
 

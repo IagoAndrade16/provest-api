@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import "express-async-errors";
-
 import "reflect-metadata";
+
 import "./container";
 import { DomainError } from "../domain/errors/DomainError";
 import { router } from "../domain/routes/index";
