@@ -1,5 +1,4 @@
 import { inject, injectable } from "tsyringe";
-import "reflect-metadata";
 
 import { DomainError } from "../../../errors/DomainError";
 import { User } from "../entities/User";
