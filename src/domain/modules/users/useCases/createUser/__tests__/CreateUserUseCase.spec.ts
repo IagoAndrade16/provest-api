@@ -1,6 +1,6 @@
-import { DomainError } from "../../../errors/DomainError";
-import { UsersRepositoryInMemory } from "../repositories/in-memory/UsersRepositoryIMemory";
-import { CreateUserUseCase } from "../useCases/CreateUserUseCase";
+import { DomainError } from "../../../../../errors/DomainError";
+import { UsersRepositoryInMemory } from "../../../repositories/in-memory/UsersRepositoryIMemory";
+import { CreateUserUseCase } from "../CreateUserUseCase";
 
 let createUserUseCase: CreateUserUseCase;
 let usersRepositoryInMemory: UsersRepositoryInMemory;
