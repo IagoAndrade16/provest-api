@@ -2,13 +2,13 @@ import { inject, injectable } from "tsyringe";
 
 import { DomainError } from "../../../../errors/DomainError";
 import { User } from "../../entities/User";
-import { UsersRepository } from "../../repositories/implementations/UsersRepository";
+import { IUsersRepository } from "../../repositories/IUsersRepository";
 
 @injectable()
 export class ProfileUseCase {
   constructor(
     @inject("UsersRepository")
-    private usersRepository: UsersRepository
+    private usersRepository: IUsersRepository
   ) {}
 
   async execute(id: string): Promise<User> {

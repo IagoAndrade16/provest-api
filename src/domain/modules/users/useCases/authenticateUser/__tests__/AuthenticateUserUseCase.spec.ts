@@ -17,19 +17,19 @@ describe("Auth User", () => {
   });
 
   it("should be able to authenticate user", async () => {
-    const user = await createUserUseCase.execute({
+    await createUserUseCase.execute({
       name: "Iago Alexandre",
       email: "iagoaap@gmail.com",
       password: "123456",
     });
 
-    const auth = await authenticateUserUseCase.execute({
-      email: user.email,
+    const { auth, user } = await authenticateUserUseCase.execute({
+      email: "iagoaap@gmail.com",
       password: "123456",
     });
 
     expect(auth).toHaveProperty("token");
-    expect(auth).toHaveProperty("user");
+    expect(user).toHaveProperty("id");
   });
 
   it("should not be able to authenticate user with incorrect email", async () => {
