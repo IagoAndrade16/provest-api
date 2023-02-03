@@ -13,8 +13,10 @@ interface IRequest {
 }
 
 interface IResponse {
-  token: string;
-  expInMinutes: string;
+  auth: {
+    token: string;
+    expInMinutes: string;
+  };
   user: User;
 }
 
@@ -45,8 +47,10 @@ class AuthenticateUserUseCase {
     });
 
     const tokenReturn: IResponse = {
-      token,
-      expInMinutes: expires_in_token,
+      auth: {
+        token,
+        expInMinutes: expires_in_token,
+      },
       user,
     };
 
