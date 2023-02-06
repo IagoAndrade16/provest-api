@@ -1,3 +1,4 @@
+import { IUpdateUserDTO } from "@modules/users/dtos/IUpdateUserDTO";
 import { v4 as uuidV4 } from "uuid";
 
 import { ICreateUserDTO } from "../../dtos/ICreateUserDTO";
@@ -41,6 +42,21 @@ class UsersRepositoryInMemory implements IUsersRepository {
     const user = this.users.find((user) => user.id === id);
 
     return user;
+  }
+
+  async update(
+    { name, email, updated_at }: IUpdateUserDTO,
+    id: string
+  ): Promise<void> {
+    this.users.forEach((user) => {
+      if (user.id === id) {
+        if (name) user.name = name;
+
+        if (email) user.email = email;
+
+        user.updated_at = updated_at;
+      }
+    });
   }
 }
 

@@ -1,3 +1,4 @@
+import { IUpdateUserDTO } from "@modules/users/dtos/IUpdateUserDTO";
 import { getRepository, Repository } from "typeorm";
 
 import { ICreateUserDTO } from "../../dtos/ICreateUserDTO";
@@ -28,6 +29,15 @@ class UsersRepository implements IUsersRepository {
     const user = await this.repository.findOne({ id });
 
     return user;
+  }
+
+  async update(data: IUpdateUserDTO, id: string): Promise<void> {
+    await this.repository
+      .createQueryBuilder()
+      .update(User)
+      .set(data)
+      .where("id = :id", { id })
+      .execute();
   }
 }
 
