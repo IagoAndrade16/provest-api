@@ -1,10 +1,10 @@
+import { DomainError } from "@errors/DomainError";
+import auth from "@infra/config/auth";
+import { User } from "@modules/users/entities/User";
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
-import { User } from "modules/users/entities/User";
 import { inject, injectable } from "tsyringe";
 
-import auth from "../../../../../infra/config/auth";
-import { DomainError } from "../../../../errors/DomainError";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
 interface IRequest {

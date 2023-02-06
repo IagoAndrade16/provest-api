@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --transpile-only --ignore-watch node_modules --respawn src/infra/server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --ignore-watch node_modules --respawn src/infra/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
     "test": "jest --runInBand --detectOpenHandles"
   },

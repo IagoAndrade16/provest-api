@@ -1,4 +1,5 @@
-import { DomainError } from "../../../../../errors/DomainError";
+import { DomainError } from "@errors/DomainError";
+
 import { UsersRepositoryInMemory } from "../../../repositories/in-memory/UsersRepositoryIMemory";
 import { CreateUserUseCase } from "../../createUser/CreateUserUseCase";
 import { AuthenticateUserUseCase } from "../AuthenticateUserUseCase";
