@@ -1,4 +1,5 @@
 import { DomainError } from "@errors/DomainError";
+import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 
 import { UsersRepositoryInMemory } from "../../../repositories/in-memory/UsersRepositoryIMemory";
 import { CreateUserUseCase } from "../../createUser/CreateUserUseCase";
@@ -7,13 +8,16 @@ import { AuthenticateUserUseCase } from "../AuthenticateUserUseCase";
 let usersRepositoryInMemory: UsersRepositoryInMemory;
 let createUserUseCase: CreateUserUseCase;
 let authenticateUserUseCase: AuthenticateUserUseCase;
+let coursesRepositoryInMemory: CoursesRepositoryInMemory;
 
 describe("Auth User", () => {
   beforeEach(() => {
     usersRepositoryInMemory = new UsersRepositoryInMemory();
+    coursesRepositoryInMemory = new CoursesRepositoryInMemory();
     createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
     authenticateUserUseCase = new AuthenticateUserUseCase(
-      usersRepositoryInMemory
+      usersRepositoryInMemory,
+      coursesRepositoryInMemory
     );
   });
 

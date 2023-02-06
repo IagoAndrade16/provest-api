@@ -49,9 +49,15 @@ export class CoursesRepositoryInMemory implements ICoursesRepository {
     return course;
   }
 
-  async findByUserId(userId: string): Promise<Course> {
-    const courses = this.courses.find((course) => course.user_id === userId);
+  async findByUserId(userId: string): Promise<Course[]> {
+    const listOfCourses = this.courses.filter(
+      (course) => course.user_id === userId
+    );
 
-    return courses;
+    return listOfCourses;
+  }
+
+  async listAllCourses(): Promise<Course[]> {
+    return this.courses;
   }
 }

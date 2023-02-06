@@ -25,4 +25,8 @@ export class CoursesRepository implements ICoursesRepository {
 
     return courses;
   }
+
+  async listAllCourses(): Promise<Course[]> {
+    return this.repository.find({});
+  }
 }
