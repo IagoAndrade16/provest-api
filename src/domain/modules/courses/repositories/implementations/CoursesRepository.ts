@@ -17,4 +17,12 @@ export class CoursesRepository implements ICoursesRepository {
 
     return course;
   }
+
+  async findByUserId(user_id: string): Promise<Course[]> {
+    const courses = await this.repository.find({
+      where: { user_id },
+    });
+
+    return courses;
+  }
 }

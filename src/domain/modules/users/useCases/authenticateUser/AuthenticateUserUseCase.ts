@@ -1,5 +1,6 @@
 import { DomainError } from "@errors/DomainError";
 import auth from "@infra/config/auth";
+import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
 import { User } from "@modules/users/entities/User";
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
@@ -24,18 +25,23 @@ interface IResponse {
 class AuthenticateUserUseCase {
   constructor(
     @inject("UsersRepository")
-    private usersRepository: IUsersRepository
+    private usersRepository: IUsersRepository,
+    @inject("CoursesRepository")
+    private coursesRepository: ICoursesRepository
   ) {}
 
   async execute({ email, password }: IRequest): Promise<IResponse> {
     const user = await this.usersRepository.findByEmail(email);
-    const { expires_in_token, secret_token } = auth;
 
     if (!user) {
       throw new DomainError("User does not exists!", 400);
     }
 
+    const { expires_in_token, secret_token } = auth;
     const passwordMatch = await compare(password, user.password);
+    const user_courses = await this.coursesRepository.findByUserId(user.id);
+
+    user.courses = user_courses;
 
     if (!passwordMatch) {
       throw new DomainError("Incorrect password!", 400);

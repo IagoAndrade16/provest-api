@@ -48,4 +48,10 @@ export class CoursesRepositoryInMemory implements ICoursesRepository {
 
     return course;
   }
+
+  async findByUserId(userId: string): Promise<Course> {
+    const courses = this.courses.find((course) => course.user_id === userId);
+
+    return courses;
+  }
 }
