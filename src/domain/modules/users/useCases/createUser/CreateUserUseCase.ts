@@ -1,7 +1,7 @@
+import { DomainError } from "@errors/DomainError";
 import { hash } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
 
-import { DomainError } from "../../../../errors/DomainError";
 import { User } from "../../entities/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 

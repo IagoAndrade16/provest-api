@@ -1,6 +1,7 @@
+import { DomainError } from "@errors/DomainError";
+import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
 import { inject, injectable } from "tsyringe";
 
-import { DomainError } from "../../../../errors/DomainError";
 import { User } from "../../entities/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -8,7 +9,9 @@ import { IUsersRepository } from "../../repositories/IUsersRepository";
 export class ProfileUseCase {
   constructor(
     @inject("UsersRepository")
-    private usersRepository: IUsersRepository
+    private usersRepository: IUsersRepository,
+    @inject("CoursesRepository")
+    private coursesRepository: ICoursesRepository
   ) {}
 
   async execute(id: string): Promise<User> {
@@ -18,7 +21,9 @@ export class ProfileUseCase {
       throw new DomainError("User not found!", 400);
     }
 
-    user.courses = [];
+    const user_courses = await this.coursesRepository.findByUserId(user.id);
+
+    user.courses = user_courses;
 
     return user;
   }

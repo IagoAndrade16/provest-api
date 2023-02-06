@@ -1,15 +1,15 @@
+import { DomainError } from "@errors/DomainError";
+import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
 import { inject, injectable } from "tsyringe";
 
-import { DomainError } from "../../../../errors/DomainError";
 import { ICreateCourseDTO } from "../../dtos/ICreateCourseDTO";
 import { Course } from "../../entities/Course";
-import { CoursesRepository } from "../../repositories/implementations/CoursesRepository";
 
 @injectable()
 export class CreateCourseUseCase {
   constructor(
     @inject("CoursesRepository")
-    private coursesRepository: CoursesRepository
+    private coursesRepository: ICoursesRepository
   ) {}
 
   async execute({
