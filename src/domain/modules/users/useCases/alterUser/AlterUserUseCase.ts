@@ -3,9 +3,9 @@ import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
 import { inject, injectable } from "tsyringe";
 
 interface IRequest {
-  name: string;
-  email: string;
-  updated_at: Date;
+  name?: string;
+  email?: string;
+  updated_at?: Date;
 }
 
 @injectable()
