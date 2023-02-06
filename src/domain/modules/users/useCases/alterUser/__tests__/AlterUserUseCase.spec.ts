@@ -53,8 +53,13 @@ describe("Alter user", () => {
   });
 
   it("should not be able to alter user if user not exists", async () => {
-    await expect(alterUserUseCase.execute({}, "123")).rejects.toEqual(
-      new DomainError("User not found!")
-    );
+    await expect(
+      alterUserUseCase.execute(
+        {
+          name: "Iago",
+        },
+        "123"
+      )
+    ).rejects.toEqual(new DomainError("User not found!"));
   });
 });
