@@ -62,4 +62,21 @@ describe("Alter user", () => {
       )
     ).rejects.toEqual(new DomainError("User not found!"));
   });
+
+  it("should not be able to alter user if any data is empty", async () => {
+    const user = await createUserUseCase.execute({
+      name: "Iago",
+      email: "iagoaap16@gmail.com",
+      password: "123456",
+    });
+
+    await expect(
+      alterUserUseCase.execute(
+        {
+          name: "",
+        },
+        user.id
+      )
+    ).rejects.toEqual(new DomainError("Property name cannot be null!"));
+  });
 });

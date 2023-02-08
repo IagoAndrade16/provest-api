@@ -26,6 +26,11 @@ export class AlterUserUseCase {
       throw new DomainError("Data is missing!", 400);
     }
 
+    Object.keys(data).forEach((key) => {
+      if (!data[key])
+        throw new DomainError(`Property ${key} cannot be null!`, 400);
+    });
+
     await this.usersRepository.update(data, id);
   }
 }

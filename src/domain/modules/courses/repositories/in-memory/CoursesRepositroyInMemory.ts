@@ -1,3 +1,4 @@
+import { IUpdateCourseDTO } from "@modules/courses/dtos/IUpdateCourseDTO";
 import { v4 as uuidV4 } from "uuid";
 
 import { ICreateCourseDTO } from "../../dtos/ICreateCourseDTO";
@@ -59,5 +60,37 @@ export class CoursesRepositoryInMemory implements ICoursesRepository {
 
   async listAllCourses(): Promise<Course[]> {
     return this.courses;
+  }
+
+  async update(
+    {
+      name,
+      category,
+      address,
+      phone,
+      email,
+      description,
+      link,
+    }: IUpdateCourseDTO,
+    course_id: string,
+    user_id: string
+  ): Promise<void> {
+    this.courses.forEach((course) => {
+      if (course.id === course_id && user_id === course.user_id) {
+        if (name) course.name = name;
+        if (name) course.category = category;
+        if (name) course.address = address;
+        if (name) course.phone = phone;
+        if (name) course.email = email;
+        if (name) course.description = description;
+        if (name) course.link = link;
+      }
+    });
+  }
+
+  async findById(id: string): Promise<Course> {
+    const course = this.courses.find((course) => course.id === id);
+
+    return course;
   }
 }

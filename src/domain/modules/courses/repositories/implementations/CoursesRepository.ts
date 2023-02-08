@@ -1,3 +1,4 @@
+import { IUpdateCourseDTO } from "@modules/courses/dtos/IUpdateCourseDTO";
 import { getRepository, Repository } from "typeorm";
 
 import { ICreateCourseDTO } from "../../dtos/ICreateCourseDTO";
@@ -28,5 +29,22 @@ export class CoursesRepository implements ICoursesRepository {
 
   async listAllCourses(): Promise<Course[]> {
     return this.repository.find({});
+  }
+
+  async update(data: IUpdateCourseDTO, course_id: string): Promise<void> {
+    await this.repository
+      .createQueryBuilder()
+      .update(Course)
+      .set(data)
+      .where("id = :id", { id: course_id })
+      .execute();
+  }
+
+  async findById(id: string): Promise<Course> {
+    const course = await this.repository.findOne({
+      where: { id },
+    });
+
+    return course;
   }
 }
