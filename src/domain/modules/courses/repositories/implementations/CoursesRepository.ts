@@ -47,4 +47,13 @@ export class CoursesRepository implements ICoursesRepository {
 
     return course;
   }
+
+  async delete(id: string): Promise<void> {
+    await this.repository
+      .createQueryBuilder()
+      .delete()
+      .from(Course)
+      .where("id = :id", { id })
+      .execute();
+  }
 }

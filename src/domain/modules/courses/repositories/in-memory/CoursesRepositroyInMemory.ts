@@ -93,4 +93,10 @@ export class CoursesRepositoryInMemory implements ICoursesRepository {
 
     return course;
   }
+
+  async delete(id: string): Promise<void> {
+    const course_index = this.courses.findIndex((course) => course.id === id);
+
+    this.courses.splice(course_index, 1);
+  }
 }

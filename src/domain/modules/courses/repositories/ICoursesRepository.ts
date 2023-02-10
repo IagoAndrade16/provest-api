@@ -12,4 +12,5 @@ export interface ICoursesRepository {
     user_id: string
   ): Promise<void>;
   findById(id: string): Promise<Course>;
+  delete(id: string): Promise<void>;
 }
