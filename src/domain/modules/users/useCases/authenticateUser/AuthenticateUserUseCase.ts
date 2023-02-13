@@ -37,15 +37,16 @@ class AuthenticateUserUseCase {
       throw new DomainError("User does not exists!", 400);
     }
 
-    const { expires_in_token, secret_token } = auth;
     const passwordMatch = await compare(password, user.password);
-    const user_courses = await this.coursesRepository.findByUserId(user.id);
-
-    user.courses = user_courses;
 
     if (!passwordMatch) {
       throw new DomainError("Incorrect password!", 400);
     }
+
+    const { expires_in_token, secret_token } = auth;
+    const user_courses = await this.coursesRepository.findByUserId(user.id);
+
+    user.courses = user_courses;
 
     const token = sign({}, secret_token, {
       subject: user.id,

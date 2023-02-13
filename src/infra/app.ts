@@ -1,6 +1,9 @@
 import express, { NextFunction, Request, Response } from "express";
 import "express-async-errors";
 import "reflect-metadata";
+import swaggerUi from "swagger-ui-express";
+
+import swaggerFile from "../../swagger.json";
 
 import "./container";
 import { DomainError } from "../domain/errors/DomainError";
@@ -12,6 +15,8 @@ createConnection();
 const app = express();
 app.use(express.json());
 app.use(router);
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
