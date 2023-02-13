@@ -1,11 +1,11 @@
+import "reflect-metadata";
 import express, { NextFunction, Request, Response } from "express";
 import "express-async-errors";
-import "reflect-metadata";
 import swaggerUi from "swagger-ui-express";
 
-import swaggerFile from "../../swagger.json";
-
 import "./container";
+
+import swaggerFile from "../../swagger.json";
 import { DomainError } from "../domain/errors/DomainError";
 import { router } from "../domain/routes/index";
 import createConnection from "./database";
