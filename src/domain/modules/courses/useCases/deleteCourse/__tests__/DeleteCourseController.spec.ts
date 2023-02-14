@@ -26,7 +26,7 @@ describe("Auth user", () => {
     await connection.close();
   });
 
-  it("should be able to create a new course", async () => {
+  it("should be able to delete course", async () => {
     const rs = await request(app).post("/users/session").send({
       email: "admin@provest.com.br",
       password: "admin",
@@ -34,7 +34,7 @@ describe("Auth user", () => {
 
     const { token } = rs.body.auth;
 
-    const response = await request(app)
+    const course = await request(app)
       .post("/courses")
       .send({
         name: "Course do Iago",
@@ -47,26 +47,15 @@ describe("Auth user", () => {
       })
       .set({ Authorization: `Bearer ${token}` });
 
-    expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty("id");
-    expect(response.body.name).toEqual("Course do Iago");
-  });
-
-  it("should not be able to create a new course if !auth", async () => {
     const response = await request(app)
-      .post("/courses")
-      .send({
-        name: "Course do Iago",
-        category: "Programação TS",
-        address: "Av. Retiro",
-        phone: "24998179466",
-        email: "curso@email.com.br",
-        description: "Novo curso!",
-        link: "https://app.rocketseat.com.br/ignite",
-      })
-      .set({ Authorization: `Bearer 123` });
+      .delete(`/courses/${course.body.id}`)
+      .send()
+      .set({ Authorization: `Bearer ${token}` });
 
-    expect(response.status).toBe(401);
-    expect(response.body.message).toEqual("Invalid token");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      status: "SUCCESS",
+      message: "Course deleted successfully",
+    });
   });
 });
