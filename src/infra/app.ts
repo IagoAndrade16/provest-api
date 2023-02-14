@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import * as dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import "express-async-errors";
 import swaggerUi from "swagger-ui-express";
@@ -9,6 +10,8 @@ import swaggerFile from "../../swagger.json";
 import { DomainError } from "../domain/errors/DomainError";
 import { router } from "../domain/routes/index";
 import createConnection from "./database";
+
+dotenv.config();
 
 createConnection();
 
