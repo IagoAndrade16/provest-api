@@ -17,8 +17,6 @@ A back-end for a older project that I make a few years ago
 
 - POST → /users/auth
 
-- GET → /users/profile
-
 - GET → /courses
 
 - PATCH → /users
