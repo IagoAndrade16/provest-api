@@ -3,8 +3,6 @@ import { Connection, createConnection, getConnectionOptions } from "typeorm";
 
 dotenv.config();
 
-console.log(process.env.NODE_ENV);
-
 export default async (): Promise<Connection> => {
   const defaultOptions = await getConnectionOptions();
 
