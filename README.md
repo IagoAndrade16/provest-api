@@ -27,4 +27,4 @@ A back-end for a older project that I make a few years ago
 
 ## Status
 
-In development.
+V1 - finished.
