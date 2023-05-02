@@ -2,8 +2,8 @@ import { DomainError } from "@errors/DomainError";
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
 
-import { CreateUserUseCase } from "../../CreateUserUseCase";
-import { AlterUserUseCase } from "../../AlterUserUseCase";
+import { AlterUserUseCase } from "../AlterUserUseCase";
+import { CreateUserUseCase } from "../CreateUserUseCase";
 
 let alterUserUseCase: AlterUserUseCase;
 let usersRepository: UsersRepositoryInMemory;

@@ -1,7 +1,7 @@
 import { DomainError } from "@errors/DomainError";
+import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
 
-import { UsersRepositoryInMemory } from "../../../repositories/in-memory/UsersRepositoryIMemory";
-import { CreateUserUseCase } from "../../CreateUserUseCase";
+import { CreateUserUseCase } from "../CreateUserUseCase";
 
 let createUserUseCase: CreateUserUseCase;
 let usersRepositoryInMemory: UsersRepositoryInMemory;
