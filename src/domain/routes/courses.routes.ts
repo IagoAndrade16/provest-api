@@ -1,10 +1,10 @@
-import { AlterCourseController } from "@modules/courses/useCases/alterCourse/AlterCourseController";
-import { DeleteCourseController } from "@modules/courses/useCases/deleteCourse/DeleteCourseController";
-import { ListAllCoursesController } from "@modules/courses/useCases/listCourses/ListAllCoursesController";
+import { AlterCourseController } from "@modules/courses/controllers/AlterCourseController";
+import { DeleteCourseController } from "@modules/courses/controllers/DeleteCourseController";
+import { ListAllCoursesController } from "@modules/courses/controllers/ListAllCoursesController";
 import { Router } from "express";
 
 import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
-import { CreateCourseController } from "../modules/courses/useCases/createCourse/CreateCourseController";
+import { CreateCourseController } from "../modules/courses/controllers/CreateCourseController";
 
 const createCourseController = new CreateCourseController();
 const listAllCoursesController = new ListAllCoursesController();

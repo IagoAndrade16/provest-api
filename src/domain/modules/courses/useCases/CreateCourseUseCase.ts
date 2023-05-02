@@ -2,8 +2,8 @@ import { DomainError } from "@errors/DomainError";
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
 import { inject, injectable } from "tsyringe";
 
-import { ICreateCourseDTO } from "../../dtos/ICreateCourseDTO";
-import { Course } from "../../entities/Course";
+import { ICreateCourseDTO } from "../dtos/ICreateCourseDTO";
+import { Course } from "../entities/Course";
 
 @injectable()
 export class CreateCourseUseCase {

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
-import { AlterUserUseCase } from "./AlterUserUseCase";
+import { AlterUserUseCase } from "../useCases/AlterUserUseCase";
 
 export class AlterUserController {
   async handle(req: Request, res: Response): Promise<Response> {

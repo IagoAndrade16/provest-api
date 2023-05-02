@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
-import { CreateCourseUseCase } from "./CreateCourseUseCase";
+import { CreateCourseUseCase } from "../useCases/CreateCourseUseCase";
 
 export class CreateCourseController {
   async handle(req: Request, res: Response): Promise<Response> {

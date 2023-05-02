@@ -1,7 +1,7 @@
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 
-import { CreateCourseUseCase } from "../../createCourse/CreateCourseUseCase";
-import { ListAllCoursesUseCase } from "../ListAllCoursesUseCase";
+import { CreateCourseUseCase } from "../../CreateCourseUseCase";
+import { ListAllCoursesUseCase } from "../../ListAllCoursesUseCase";
 
 let listAllCoursesUseCase: ListAllCoursesUseCase;
 let createCourseUseCase: CreateCourseUseCase;

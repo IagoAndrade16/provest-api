@@ -1,14 +1,12 @@
-import { AlterUserController } from "@modules/users/useCases/alterUser/AlterUserController";
-import { AuthenticateUserController } from "@modules/users/useCases/authenticateUser/AuthenticateUserController";
-import { CreateUserController } from "@modules/users/useCases/createUser/CreateUserController";
-// import { ProfileController } from "@modules/users/useCases/profile/ProfileController";
+import { AlterUserController } from "@modules/users/controllers/AlterUserController";
+import { AuthenticateUserController } from "@modules/users/controllers/AuthenticateUserController";
+import { CreateUserController } from "@modules/users/controllers/CreateUserController";
 import { Router } from "express";
 
 import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 
 const createUserController = new CreateUserController();
 const authenticateUserController = new AuthenticateUserController();
-// const profileController = new ProfileController();
 const alterUserController = new AlterUserController();
 
 const usersRoutes = Router();

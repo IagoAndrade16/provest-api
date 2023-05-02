@@ -1,7 +1,7 @@
 import { DomainError } from "@errors/DomainError";
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 
-import { CreateCourseUseCase } from "../../createCourse/CreateCourseUseCase";
+import { CreateCourseUseCase } from "../CreateCourseUseCase";
 import { DeleteCourseUseCase } from "../DeleteCourseUseCase";
 
 let coursesRepository: CoursesRepositoryInMemory;

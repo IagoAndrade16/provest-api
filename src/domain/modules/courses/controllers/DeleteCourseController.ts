@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
-import { DeleteCourseUseCase } from "./DeleteCourseUseCase";
+import { DeleteCourseUseCase } from "../useCases/DeleteCourseUseCase";
 
 export class DeleteCourseController {
   async handle(req: Request, res: Response): Promise<Response> {

@@ -2,7 +2,7 @@ import { Course } from "@modules/courses/entities/Course";
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
-import { ListAllCoursesUseCase } from "./ListAllCoursesUseCase";
+import { ListAllCoursesUseCase } from "../useCases/ListAllCoursesUseCase";
 
 export class ListAllCoursesController {
   async handle(req: Request, res: Response): Promise<Response> {
