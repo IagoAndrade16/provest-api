@@ -2,10 +2,10 @@ import { DomainError } from "@errors/DomainError";
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
 
-import { AlterUserUseCase } from "../AlterUserUseCase";
 import { CreateUserUseCase } from "../CreateUserUseCase";
+import { UpdateUserInfoUseCase } from "../UpdateUserInfoUseCase";
 
-let alterUserUseCase: AlterUserUseCase;
+let alterUserUseCase: UpdateUserInfoUseCase;
 let usersRepository: UsersRepositoryInMemory;
 let coursesRepository: CoursesRepositoryInMemory;
 let createUserUseCase: CreateUserUseCase;
@@ -15,7 +15,7 @@ describe("Alter user", () => {
     usersRepository = new UsersRepositoryInMemory();
     coursesRepository = new CoursesRepositoryInMemory();
     createUserUseCase = new CreateUserUseCase(usersRepository);
-    alterUserUseCase = new AlterUserUseCase(usersRepository);
+    alterUserUseCase = new UpdateUserInfoUseCase(usersRepository);
   });
 
   // it("should be able to alter user", async () => {

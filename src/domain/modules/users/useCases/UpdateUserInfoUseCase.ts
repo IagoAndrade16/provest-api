@@ -9,7 +9,7 @@ interface IRequest {
 }
 
 @injectable()
-export class AlterUserUseCase {
+export class UpdateUserInfoUseCase {
   constructor(
     @inject("UsersRepository")
     private usersRepository: IUsersRepository

@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
-import { AlterUserUseCase } from "../useCases/AlterUserUseCase";
+import { UpdateUserInfoUseCase } from "../useCases/UpdateUserInfoUseCase";
 
-export class AlterUserController {
+export class UpdateUserInfoController {
   async handle(req: Request, res: Response): Promise<Response> {
     const data = req.body;
     const { id } = req.user;
 
-    const alterUserUseCase = container.resolve(AlterUserUseCase);
+    const alterUserUseCase = container.resolve(UpdateUserInfoUseCase);
 
     await alterUserUseCase.execute(data, id);
 
