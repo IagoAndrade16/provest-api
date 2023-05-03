@@ -5,13 +5,13 @@ import * as yup from "yup";
 import { UpdateCourseInfoUseCase } from "../useCases/UpdateCourseInfoUseCase";
 
 const bodySchema = yup.object().shape({
-  name: yup.string().optional(),
-  category: yup.string().optional(),
-  address: yup.string().optional(),
-  phone: yup.string().optional(),
-  email: yup.string().optional(),
-  description: yup.string().optional(),
-  link: yup.string().optional(),
+  name: yup.string().optional().nonNullable(),
+  category: yup.string().optional().nonNullable(),
+  address: yup.string().optional().nonNullable(),
+  phone: yup.string().optional().nonNullable(),
+  email: yup.string().optional().email().nonNullable(),
+  description: yup.string().optional().nonNullable(),
+  link: yup.string().optional().url().nonNullable(),
 });
 
 const paramsSchema = yup.object().shape({
@@ -21,7 +21,7 @@ const paramsSchema = yup.object().shape({
 export class UpdateCourseController {
   async handle(req: Request, res: Response): Promise<Response> {
     const data = await bodySchema.validate(req.body, {
-      abortEarly: true,
+      abortEarly: false,
     });
 
     const { course_id } = await paramsSchema.validate(req.params, {

@@ -6,11 +6,7 @@ export interface ICoursesRepository {
   create(data: ICreateCourseDTO): Promise<Course>;
   findByUserId(user_id: string): Promise<Course[]>;
   listAllCourses(): Promise<Course[]>;
-  update(
-    data: IUpdateCourseDTO,
-    course_id: string,
-    user_id: string
-  ): Promise<void>;
+  update(data: IUpdateCourseDTO, course_id: string): Promise<void>;
   findById(id: string): Promise<Course>;
   delete(id: string): Promise<void>;
 }
