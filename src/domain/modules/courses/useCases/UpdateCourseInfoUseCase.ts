@@ -9,7 +9,7 @@ interface IResponse {
 }
 
 @injectable()
-export class AlterCourseUseCase {
+export class UpdateCourseInfoUseCase {
   constructor(
     @inject("CoursesRepository")
     private coursesRepository: ICoursesRepository

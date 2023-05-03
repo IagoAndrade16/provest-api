@@ -13,5 +13,4 @@ var usersRoutes = (0, express_1.Router)();
 exports.usersRoutes = usersRoutes;
 usersRoutes.post("/", createUserController.handle);
 usersRoutes.post("/session", authenticateUserController.handle);
-// usersRoutes.get("/profile", ensureAuthenticated, profileController.handle);
 usersRoutes.patch("/", ensureAuthenticated_1.ensureAuthenticated, updateUserInfoController.handle);

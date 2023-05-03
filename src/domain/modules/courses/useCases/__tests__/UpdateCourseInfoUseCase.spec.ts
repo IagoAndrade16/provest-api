@@ -1,18 +1,20 @@
 import { DomainError } from "@errors/DomainError";
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 
-import { AlterCourseUseCase } from "../AlterCourseUseCase";
 import { CreateCourseUseCase } from "../CreateCourseUseCase";
+import { UpdateCourseInfoUseCase } from "../UpdateCourseInfoUseCase";
 
 let coursesRepositoryInMemory: CoursesRepositoryInMemory;
 let createCourseUseCase: CreateCourseUseCase;
-let alterCourseUseCase: AlterCourseUseCase;
+let updateCourseInfoUseCase: UpdateCourseInfoUseCase;
 
 describe("Alter course", () => {
   beforeEach(() => {
     coursesRepositoryInMemory = new CoursesRepositoryInMemory();
     createCourseUseCase = new CreateCourseUseCase(coursesRepositoryInMemory);
-    alterCourseUseCase = new AlterCourseUseCase(coursesRepositoryInMemory);
+    updateCourseInfoUseCase = new UpdateCourseInfoUseCase(
+      coursesRepositoryInMemory
+    );
   });
 
   it("should be able to alter course", async () => {
@@ -27,7 +29,7 @@ describe("Alter course", () => {
       user_id: "123",
     });
 
-    const res = await alterCourseUseCase.execute(
+    const res = await updateCourseInfoUseCase.execute(
       {
         name: "Course alterado",
       },
@@ -41,7 +43,7 @@ describe("Alter course", () => {
 
   it("should not be able to alter course does not exists", async () => {
     await expect(
-      alterCourseUseCase.execute(
+      updateCourseInfoUseCase.execute(
         {
           name: "Course alterado",
         },
@@ -64,7 +66,7 @@ describe("Alter course", () => {
     });
 
     await expect(
-      alterCourseUseCase.execute(
+      updateCourseInfoUseCase.execute(
         {
           name: "Course alterado",
         },
@@ -89,7 +91,7 @@ describe("Alter course", () => {
     });
 
     await expect(
-      alterCourseUseCase.execute({}, course.id, "123")
+      updateCourseInfoUseCase.execute({}, course.id, "123")
     ).rejects.toEqual(new DomainError("At least one parameter is required."));
   });
 
@@ -106,7 +108,7 @@ describe("Alter course", () => {
     });
 
     await expect(
-      alterCourseUseCase.execute(
+      updateCourseInfoUseCase.execute(
         {
           name: "",
         },

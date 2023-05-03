@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { container } from "tsyringe";
 import * as yup from "yup";
 
-import { AlterCourseUseCase } from "../useCases/AlterCourseUseCase";
+import { UpdateCourseInfoUseCase } from "../useCases/UpdateCourseInfoUseCase";
 
 const bodySchema = yup.object().shape({
   name: yup.string().optional(),
@@ -18,7 +18,7 @@ const paramsSchema = yup.object().shape({
   course_id: yup.string().required("course_id is a required field"),
 });
 
-export class AlterCourseController {
+export class UpdateCourseController {
   async handle(req: Request, res: Response): Promise<Response> {
     const data = await bodySchema.validate(req.body, {
       abortEarly: true,
@@ -29,9 +29,9 @@ export class AlterCourseController {
     });
 
     const { id } = req.user;
-    const alterCourseUseCase = container.resolve(AlterCourseUseCase);
+    const updateCourseInfoUseCase = container.resolve(UpdateCourseInfoUseCase);
 
-    await alterCourseUseCase.execute(data, course_id, id);
+    await updateCourseInfoUseCase.execute(data, course_id, id);
 
     return res.status(200).json({
       status: "SUCCESS",
