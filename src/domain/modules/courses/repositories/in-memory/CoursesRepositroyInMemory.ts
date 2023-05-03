@@ -72,19 +72,16 @@ export class CoursesRepositoryInMemory implements ICoursesRepository {
       description,
       link,
     }: IUpdateCourseDTO,
-    course_id: string,
-    user_id: string
+    _course_id: string
   ): Promise<void> {
     this.courses.forEach((course) => {
-      if (course.id === course_id && user_id === course.user_id) {
-        if (name) course.name = name;
-        if (name) course.category = category;
-        if (name) course.address = address;
-        if (name) course.phone = phone;
-        if (name) course.email = email;
-        if (name) course.description = description;
-        if (name) course.link = link;
-      }
+      course.name = name;
+      course.category = category;
+      course.address = address;
+      course.phone = phone;
+      course.email = email;
+      course.description = description;
+      course.link = link;
     });
   }
 
