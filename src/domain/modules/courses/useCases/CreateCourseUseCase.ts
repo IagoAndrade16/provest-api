@@ -11,26 +11,8 @@ export class CreateCourseUseCase {
     private coursesRepository: ICoursesRepository
   ) {}
 
-  async execute({
-    name,
-    category,
-    address,
-    phone,
-    email,
-    description,
-    link,
-    user_id,
-  }: ICreateCourseDTO): Promise<Course> {
-    const course = await this.coursesRepository.create({
-      name,
-      category,
-      address,
-      phone,
-      email,
-      description,
-      link,
-      user_id,
-    });
+  async execute(input: ICreateCourseDTO): Promise<Course> {
+    const course = await this.coursesRepository.create(input);
 
     return course;
   }
