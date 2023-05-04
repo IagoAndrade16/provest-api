@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,7 +61,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthenticateUserController = void 0;
 var tsyringe_1 = require("tsyringe");
+var yup = __importStar(require("yup"));
 var AuthenticateUserUseCase_1 = require("../useCases/AuthenticateUserUseCase");
+var bodySchema = yup.object().shape({
+    email: yup.string().email().required().max(64),
+    password: yup.string().required().max(20),
+});
 var AuthenticateUserController = /** @class */ (function () {
     function AuthenticateUserController() {
     }
@@ -47,14 +75,17 @@ var AuthenticateUserController = /** @class */ (function () {
             var _a, email, password, authenticateUserUseCase, auth;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0:
-                        _a = req.body, email = _a.email, password = _a.password;
+                    case 0: return [4 /*yield*/, bodySchema.validate(req.body, {
+                            abortEarly: false,
+                        })];
+                    case 1:
+                        _a = _b.sent(), email = _a.email, password = _a.password;
                         authenticateUserUseCase = tsyringe_1.container.resolve(AuthenticateUserUseCase_1.AuthenticateUserUseCase);
                         return [4 /*yield*/, authenticateUserUseCase.execute({
                                 email: email,
                                 password: password,
                             })];
-                    case 1:
+                    case 2:
                         auth = _b.sent();
                         return [2 /*return*/, res.status(200).json(auth)];
                 }

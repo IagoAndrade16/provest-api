@@ -44,17 +44,14 @@ class UsersRepositoryInMemory implements IUsersRepository {
     return user;
   }
 
-  async update(
-    { name, email, updated_at }: IUpdateUserDTO,
-    id: string
-  ): Promise<void> {
+  async update({ name, email }: IUpdateUserDTO, id: string): Promise<void> {
     this.users.forEach((user) => {
       if (user.id === id) {
         if (name) user.name = name;
 
         if (email) user.email = email;
 
-        user.updated_at = updated_at;
+        user.updated_at = new Date();
       }
     });
   }

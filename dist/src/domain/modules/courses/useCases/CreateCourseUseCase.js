@@ -49,41 +49,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateCourseUseCase = void 0;
-var DomainError_1 = require("@errors/DomainError");
 var tsyringe_1 = require("tsyringe");
 var CreateCourseUseCase = /** @class */ (function () {
     function CreateCourseUseCase(coursesRepository) {
         this.coursesRepository = coursesRepository;
     }
-    CreateCourseUseCase.prototype.execute = function (_a) {
-        var name = _a.name, category = _a.category, address = _a.address, phone = _a.phone, email = _a.email, description = _a.description, link = _a.link, user_id = _a.user_id;
+    CreateCourseUseCase.prototype.execute = function (input) {
         return __awaiter(this, void 0, void 0, function () {
             var course;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        if (!name ||
-                            !category ||
-                            !address ||
-                            !phone ||
-                            !email ||
-                            !description ||
-                            !link ||
-                            !user_id) {
-                            throw new DomainError_1.DomainError("Any data is missing!");
-                        }
-                        return [4 /*yield*/, this.coursesRepository.create({
-                                name: name,
-                                category: category,
-                                address: address,
-                                phone: phone,
-                                email: email,
-                                description: description,
-                                link: link,
-                                user_id: user_id,
-                            })];
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.coursesRepository.create(input)];
                     case 1:
-                        course = _b.sent();
+                        course = _a.sent();
                         return [2 /*return*/, course];
                 }
             });

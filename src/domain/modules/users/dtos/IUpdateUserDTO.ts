@@ -1,5 +1,4 @@
-export interface IUpdateUserDTO {
+export type IUpdateUserDTO = {
   name?: string;
   email?: string;
-  updated_at?: Date;
-}
+};
