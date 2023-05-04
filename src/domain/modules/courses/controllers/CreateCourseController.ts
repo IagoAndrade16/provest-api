@@ -30,6 +30,7 @@ export class CreateCourseController {
     const input = (await bodySchema.validate(req.body, {
       abortEarly: false,
     })) as CreateCourseInput;
+
     const { id: user_id } = req.user;
 
     const createCourseUseCase = container.resolve(CreateCourseUseCase);

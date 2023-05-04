@@ -18,11 +18,11 @@ export class DeleteCourseController {
 
     const deleteCourseUseCase = container.resolve(DeleteCourseUseCase);
 
-    const response = await deleteCourseUseCase.execute({
+    await deleteCourseUseCase.execute({
       course_id,
       user_id: id,
     });
 
-    return res.status(200).json(response);
+    return res.status(200).json();
   }
 }

@@ -89,7 +89,7 @@ var UsersRepositoryInMemory = /** @class */ (function () {
         });
     };
     UsersRepositoryInMemory.prototype.update = function (_a, id) {
-        var name = _a.name, email = _a.email, updated_at = _a.updated_at;
+        var name = _a.name, email = _a.email;
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_b) {
                 this.users.forEach(function (user) {
@@ -98,7 +98,7 @@ var UsersRepositoryInMemory = /** @class */ (function () {
                             user.name = name;
                         if (email)
                             user.email = email;
-                        user.updated_at = updated_at;
+                        user.updated_at = new Date();
                     }
                 });
                 return [2 /*return*/];

@@ -71,7 +71,7 @@ var DeleteCourseController = /** @class */ (function () {
     }
     DeleteCourseController.prototype.handle = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var course_id, id, deleteCourseUseCase, response;
+            var course_id, id, deleteCourseUseCase;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, paramsSchema.validate(req.params, {
@@ -86,8 +86,8 @@ var DeleteCourseController = /** @class */ (function () {
                                 user_id: id,
                             })];
                     case 2:
-                        response = _a.sent();
-                        return [2 /*return*/, res.status(200).json(response)];
+                        _a.sent();
+                        return [2 /*return*/, res.status(200).json()];
                 }
             });
         });
