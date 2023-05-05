@@ -42,7 +42,7 @@ var ListAllCoursesUseCase_1 = require("../useCases/ListAllCoursesUseCase");
 var ListAllCoursesController = /** @class */ (function () {
     function ListAllCoursesController() {
     }
-    ListAllCoursesController.prototype.handle = function (req, res) {
+    ListAllCoursesController.prototype.handle = function (_req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var listAllCoursesUseCase, courses;
             return __generator(this, function (_a) {

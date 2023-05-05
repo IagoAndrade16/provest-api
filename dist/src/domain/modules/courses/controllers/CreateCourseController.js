@@ -1,4 +1,44 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,36 +78,43 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateCourseController = void 0;
 var tsyringe_1 = require("tsyringe");
+var yup = __importStar(require("yup"));
 var CreateCourseUseCase_1 = require("../useCases/CreateCourseUseCase");
+var bodySchema = yup.object().shape({
+    name: yup.string().required("name is a required field"),
+    category: yup.string().required("category is a required field"),
+    address: yup.string().required("address is a required field"),
+    phone: yup.string().required("phone is a required field"),
+    email: yup.string().required("email is a required field").email(),
+    description: yup.string().required("description is a required field"),
+    link: yup.string().required("link is a required field").url(),
+});
 var CreateCourseController = /** @class */ (function () {
     function CreateCourseController() {
     }
     CreateCourseController.prototype.handle = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, name, category, address, phone, email, description, link, user_id, createCourseUseCase, course;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = req.body, name = _a.name, category = _a.category, address = _a.address, phone = _a.phone, email = _a.email, description = _a.description, link = _a.link;
+            var input, user_id, createCourseUseCase, course;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, bodySchema.validate(req.body, {
+                            abortEarly: false,
+                        })];
+                    case 1:
+                        input = (_a.sent());
                         user_id = req.user.id;
                         createCourseUseCase = tsyringe_1.container.resolve(CreateCourseUseCase_1.CreateCourseUseCase);
-                        return [4 /*yield*/, createCourseUseCase.execute({
-                                name: name,
-                                category: category,
-                                address: address,
-                                phone: phone,
-                                email: email,
-                                description: description,
-                                link: link,
-                                user_id: user_id,
-                            })];
-                    case 1:
-                        course = _b.sent();
+                        return [4 /*yield*/, createCourseUseCase.execute(__assign(__assign({}, input), { user_id: user_id }))];
+                    case 2:
+                        course = _a.sent();
                         return [2 /*return*/, res.status(201).json(course)];
                 }
             });
         });
     };
+    CreateCourseController = __decorate([
+        (0, tsyringe_1.injectable)()
+    ], CreateCourseController);
     return CreateCourseController;
 }());
 exports.CreateCourseController = CreateCourseController;

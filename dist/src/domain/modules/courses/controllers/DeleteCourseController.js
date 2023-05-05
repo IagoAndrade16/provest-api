@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,26 +61,33 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeleteCourseController = void 0;
 var tsyringe_1 = require("tsyringe");
+var yup = __importStar(require("yup"));
 var DeleteCourseUseCase_1 = require("../useCases/DeleteCourseUseCase");
+var paramsSchema = yup.object().shape({
+    course_id: yup.string().required().max(64),
+});
 var DeleteCourseController = /** @class */ (function () {
     function DeleteCourseController() {
     }
     DeleteCourseController.prototype.handle = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var course_id, id, deleteCourseUseCase, response;
+            var course_id, id, deleteCourseUseCase;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        course_id = req.params.course_id;
+                    case 0: return [4 /*yield*/, paramsSchema.validate(req.params, {
+                            abortEarly: false,
+                        })];
+                    case 1:
+                        course_id = (_a.sent()).course_id;
                         id = req.user.id;
                         deleteCourseUseCase = tsyringe_1.container.resolve(DeleteCourseUseCase_1.DeleteCourseUseCase);
                         return [4 /*yield*/, deleteCourseUseCase.execute({
                                 course_id: course_id,
                                 user_id: id,
                             })];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, res.status(200).json(response)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, res.status(200).json()];
                 }
             });
         });

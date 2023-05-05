@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DomainError_1 = require("@errors/DomainError");
+var JwtProviderImpl_1 = require("@infra/providers/implementations/JwtProviderImpl");
 var CoursesRepositroyInMemory_1 = require("@modules/courses/repositories/in-memory/CoursesRepositroyInMemory");
 var UsersRepositoryIMemory_1 = require("@modules/users/repositories/in-memory/UsersRepositoryIMemory");
 var AuthenticateUserUseCase_1 = require("../AuthenticateUserUseCase");
@@ -45,12 +46,14 @@ var usersRepositoryInMemory;
 var createUserUseCase;
 var authenticateUserUseCase;
 var coursesRepositoryInMemory;
+var jwtProvider;
 describe("Auth User", function () {
     beforeEach(function () {
         usersRepositoryInMemory = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
         coursesRepositoryInMemory = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
         createUserUseCase = new CreateUserUseCase_1.CreateUserUseCase(usersRepositoryInMemory);
-        authenticateUserUseCase = new AuthenticateUserUseCase_1.AuthenticateUserUseCase(usersRepositoryInMemory, coursesRepositoryInMemory);
+        jwtProvider = new JwtProviderImpl_1.JwtProviderImpl();
+        authenticateUserUseCase = new AuthenticateUserUseCase_1.AuthenticateUserUseCase(usersRepositoryInMemory, coursesRepositoryInMemory, jwtProvider);
     });
     it("should be able to authenticate user", function () { return __awaiter(void 0, void 0, void 0, function () {
         var _a, auth, user;

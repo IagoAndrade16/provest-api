@@ -65,18 +65,15 @@ var DeleteCourseUseCase = /** @class */ (function () {
                     case 1:
                         course = _b.sent();
                         if (!course) {
-                            throw new DomainError_1.DomainError("Course not found", 400);
+                            throw new DomainError_1.DomainError("COURSE_NOT_FOUND", 400);
                         }
                         if (course.user_id !== user_id) {
-                            throw new DomainError_1.DomainError("This course does not be delete for this user!", 400);
+                            throw new DomainError_1.DomainError("UNAUTHORIZED_DELETE", 400);
                         }
                         return [4 /*yield*/, this.coursesRepository.delete(course_id)];
                     case 2:
                         _b.sent();
-                        return [2 /*return*/, {
-                                status: "SUCCESS",
-                                message: "Course deleted successfully",
-                            }];
+                        return [2 /*return*/];
                 }
             });
         });

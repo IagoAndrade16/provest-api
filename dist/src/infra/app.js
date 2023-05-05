@@ -28,13 +28,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 require("reflect-metadata");
+var handleErrors_1 = require("@errors/handleErrors");
 var dotenv = __importStar(require("dotenv"));
 var express_1 = __importDefault(require("express"));
 require("express-async-errors");
 var swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 require("./container");
 var swagger_json_1 = __importDefault(require("../../swagger.json"));
-var DomainError_1 = require("../domain/errors/DomainError");
 var index_1 = require("../domain/routes/index");
 var database_1 = __importDefault(require("./database"));
 dotenv.config();
@@ -44,16 +44,4 @@ exports.app = app;
 app.use(express_1.default.json());
 app.use(index_1.router);
 app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
-app.use(
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function (err, request, response, next) {
-    if (err instanceof DomainError_1.DomainError) {
-        return response.status(err.statusCode).json({
-            message: err.message,
-        });
-    }
-    return response.status(500).json({
-        status: "error",
-        message: "Internal server error - ".concat(err.message),
-    });
-});
+app.use(handleErrors_1.handleErrors);

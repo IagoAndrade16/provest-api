@@ -37,7 +37,10 @@ class UsersRepository implements IUsersRepository {
     await this.repository
       .createQueryBuilder()
       .update(User)
-      .set(data)
+      .set({
+        ...data,
+        updated_at: new Date(),
+      })
       .where("id = :id", { id })
       .execute();
   }

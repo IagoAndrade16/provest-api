@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,25 +61,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateUserController = void 0;
 var tsyringe_1 = require("tsyringe");
+var yup = __importStar(require("yup"));
 var CreateUserUseCase_1 = require("../useCases/CreateUserUseCase");
+var bodySchema = yup.object().shape({
+    name: yup.string().required().max(255),
+    password: yup.string().required().max(20),
+    email: yup.string().required().email().max(255),
+});
 var CreateUserController = /** @class */ (function () {
     function CreateUserController() {
     }
     CreateUserController.prototype.handle = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, name, password, email, createUserUseCase, user;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = req.body, name = _a.name, password = _a.password, email = _a.email;
-                        createUserUseCase = tsyringe_1.container.resolve(CreateUserUseCase_1.CreateUserUseCase);
-                        return [4 /*yield*/, createUserUseCase.execute({
-                                name: name,
-                                password: password,
-                                email: email,
-                            })];
+            var input, createUserUseCase, user;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, bodySchema.validate(req.body, { abortEarly: false })];
                     case 1:
-                        user = _b.sent();
+                        input = _a.sent();
+                        createUserUseCase = tsyringe_1.container.resolve(CreateUserUseCase_1.CreateUserUseCase);
+                        return [4 /*yield*/, createUserUseCase.execute(input)];
+                    case 2:
+                        user = _a.sent();
                         return [2 /*return*/, res.status(201).send(user)];
                 }
             });

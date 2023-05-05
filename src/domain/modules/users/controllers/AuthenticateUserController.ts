@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { AuthenticateUserUseCase } from "../useCases/AuthenticateUserUseCase";
 
 const bodySchema = yup.object().shape({
-  email: yup.string().email().required().max(64),
+  email: yup.string().email().required().max(255),
   password: yup.string().required().max(20),
 });
 class AuthenticateUserController {

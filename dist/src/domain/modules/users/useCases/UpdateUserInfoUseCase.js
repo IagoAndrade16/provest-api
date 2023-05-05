@@ -55,25 +55,18 @@ var UpdateUserInfoUseCase = /** @class */ (function () {
     function UpdateUserInfoUseCase(usersRepository) {
         this.usersRepository = usersRepository;
     }
-    UpdateUserInfoUseCase.prototype.execute = function (data, id) {
+    UpdateUserInfoUseCase.prototype.execute = function (data, userId) {
         return __awaiter(this, void 0, void 0, function () {
             var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.usersRepository.findById(id)];
+                    case 0: return [4 /*yield*/, this.usersRepository.findById(userId)];
                     case 1:
                         user = _a.sent();
                         if (!user) {
                             throw new DomainError_1.DomainError("User not found!", 400);
                         }
-                        if (Object.keys(data).length === 0) {
-                            throw new DomainError_1.DomainError("Data is missing!", 400);
-                        }
-                        Object.keys(data).forEach(function (key) {
-                            if (!data[key])
-                                throw new DomainError_1.DomainError("Property ".concat(key, " cannot be null!"), 400);
-                        });
-                        return [4 /*yield*/, this.usersRepository.update(data, id)];
+                        return [4 /*yield*/, this.usersRepository.update(data, userId)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];

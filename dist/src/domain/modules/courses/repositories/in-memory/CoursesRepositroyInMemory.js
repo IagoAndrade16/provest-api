@@ -93,27 +93,18 @@ var CoursesRepositoryInMemory = /** @class */ (function () {
             });
         });
     };
-    CoursesRepositoryInMemory.prototype.update = function (_a, course_id, user_id) {
+    CoursesRepositoryInMemory.prototype.update = function (_a, _course_id) {
         var name = _a.name, category = _a.category, address = _a.address, phone = _a.phone, email = _a.email, description = _a.description, link = _a.link;
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_b) {
                 this.courses.forEach(function (course) {
-                    if (course.id === course_id && user_id === course.user_id) {
-                        if (name)
-                            course.name = name;
-                        if (name)
-                            course.category = category;
-                        if (name)
-                            course.address = address;
-                        if (name)
-                            course.phone = phone;
-                        if (name)
-                            course.email = email;
-                        if (name)
-                            course.description = description;
-                        if (name)
-                            course.link = link;
-                    }
+                    course.name = name;
+                    course.category = category;
+                    course.address = address;
+                    course.phone = phone;
+                    course.email = email;
+                    course.description = description;
+                    course.link = link;
                 });
                 return [2 /*return*/];
             });

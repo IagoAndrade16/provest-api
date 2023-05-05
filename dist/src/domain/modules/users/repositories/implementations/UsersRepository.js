@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -63,7 +74,9 @@ var UsersRepository = /** @class */ (function () {
             var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.findOne({ email: email })];
+                    case 0: return [4 /*yield*/, this.repository.findOne({
+                            email: email,
+                        })];
                     case 1:
                         user = _a.sent();
                         return [2 /*return*/, user];
@@ -91,7 +104,7 @@ var UsersRepository = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.repository
                             .createQueryBuilder()
                             .update(User_1.User)
-                            .set(data)
+                            .set(__assign(__assign({}, data), { updated_at: new Date() }))
                             .where("id = :id", { id: id })
                             .execute()];
                     case 1:

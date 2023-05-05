@@ -5,11 +5,11 @@ import { inject, injectable } from "tsyringe";
 import { User } from "../entities/User";
 import { IUsersRepository } from "../repositories/IUsersRepository";
 
-interface IRequest {
+export type CreateUserInput = {
   name: string;
   password: string;
   email: string;
-}
+};
 
 @injectable()
 class CreateUserUseCase {
@@ -18,15 +18,11 @@ class CreateUserUseCase {
     private usersRepository: IUsersRepository
   ) {}
 
-  async execute({ name, password, email }: IRequest): Promise<User> {
+  async execute({ name, password, email }: CreateUserInput): Promise<User> {
     const userAlreadyExists = await this.usersRepository.findByEmail(email);
 
     if (userAlreadyExists) {
       throw new DomainError("Email already exists!", 400);
-    }
-
-    if (!name || !password || !email) {
-      throw new DomainError("name, email or password is missing!", 400);
     }
 
     const passwordHash = await hash(password, 8);

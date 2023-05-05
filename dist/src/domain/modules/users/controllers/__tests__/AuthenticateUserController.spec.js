@@ -45,46 +45,119 @@ var supertest_1 = __importDefault(require("supertest"));
 var typeorm_1 = require("typeorm");
 var uuid_1 = require("uuid");
 var connection;
-describe("Auth user", function () {
-    beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var id, password;
+var route = "/users/session";
+beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    var id, password;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, typeorm_1.createConnection)()];
+            case 1:
+                connection = _a.sent();
+                return [4 /*yield*/, connection.runMigrations()];
+            case 2:
+                _a.sent();
+                id = (0, uuid_1.v4)();
+                return [4 /*yield*/, (0, bcryptjs_1.hash)("admin", 8)];
+            case 3:
+                password = _a.sent();
+                return [4 /*yield*/, connection.query("INSERT INTO USERS(id, name, email, password, created_at, updated_at)\n      values('".concat(id, "', 'Controller', 'admin@provest.com.br', '").concat(password, "', 'now()', 'now()')\n    "))];
+            case 4:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, connection.dropDatabase()];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, connection.close()];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+describe("Schema validation", function () {
+    it("should required necessary parameters", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, typeorm_1.createConnection)()];
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(route).send({})];
                 case 1:
-                    connection = _a.sent();
-                    return [4 /*yield*/, connection.runMigrations()];
-                case 2:
-                    _a.sent();
-                    id = (0, uuid_1.v4)();
-                    return [4 /*yield*/, (0, bcryptjs_1.hash)("admin", 8)];
-                case 3:
-                    password = _a.sent();
-                    return [4 /*yield*/, connection.query("INSERT INTO USERS(id, name, email, password, created_at, updated_at)\n        values('".concat(id, "', 'Controller', 'admin@provest.com.br', '").concat(password, "', 'now()', 'now()')\n      "))];
-                case 4:
-                    _a.sent();
+                    response = _a.sent();
+                    expect(response.status).toBe(400);
+                    expect(response.body).toHaveProperty("email");
+                    expect(response.body).toHaveProperty("password");
                     return [2 /*return*/];
             }
         });
     }); });
-    afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, connection.dropDatabase()];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, connection.close()];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+    describe("email", function () {
+        it("should require a valid email", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(route).send({
+                            email: "invalid email",
+                            password: "123456",
+                        })];
+                    case 1:
+                        response = _a.sent();
+                        expect(response.status).toBe(400);
+                        expect(response.body).toHaveProperty("email");
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it("should require a valid email length", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                            .post(route)
+                            .send({
+                            email: "iago".concat("a".repeat(255), "@gmail.com"),
+                            password: "123456",
+                        })];
+                    case 1:
+                        response = _a.sent();
+                        expect(response.status).toBe(400);
+                        expect(response.body).toHaveProperty("email");
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe("password", function () {
+        it("should require a valid password length", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                            .post(route)
+                            .send({
+                            email: "admin@provest.com.br",
+                            password: "a".repeat(21),
+                        })];
+                    case 1:
+                        response = _a.sent();
+                        expect(response.status).toBe(400);
+                        expect(response.body).toHaveProperty("password");
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+});
+describe("Return values", function () {
     it("should be able to authenticate user", function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post("/users/session").send({
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(route).send({
                         email: "admin@provest.com.br",
                         password: "admin",
                     })];
