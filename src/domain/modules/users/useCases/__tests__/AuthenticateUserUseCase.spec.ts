@@ -1,4 +1,5 @@
 import { DomainError } from "@errors/DomainError";
+import { JwtProviderImpl } from "@infra/providers/implementations/JwtProviderImpl";
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
 
@@ -9,15 +10,18 @@ let usersRepositoryInMemory: UsersRepositoryInMemory;
 let createUserUseCase: CreateUserUseCase;
 let authenticateUserUseCase: AuthenticateUserUseCase;
 let coursesRepositoryInMemory: CoursesRepositoryInMemory;
+let jwtProvider: JwtProviderImpl;
 
 describe("Auth User", () => {
   beforeEach(() => {
     usersRepositoryInMemory = new UsersRepositoryInMemory();
     coursesRepositoryInMemory = new CoursesRepositoryInMemory();
     createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
+    jwtProvider = new JwtProviderImpl();
     authenticateUserUseCase = new AuthenticateUserUseCase(
       usersRepositoryInMemory,
-      coursesRepositoryInMemory
+      coursesRepositoryInMemory,
+      jwtProvider
     );
   });
 

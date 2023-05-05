@@ -64,7 +64,7 @@ var tsyringe_1 = require("tsyringe");
 var yup = __importStar(require("yup"));
 var AuthenticateUserUseCase_1 = require("../useCases/AuthenticateUserUseCase");
 var bodySchema = yup.object().shape({
-    email: yup.string().email().required().max(64),
+    email: yup.string().email().required().max(255),
     password: yup.string().required().max(20),
 });
 var AuthenticateUserController = /** @class */ (function () {
