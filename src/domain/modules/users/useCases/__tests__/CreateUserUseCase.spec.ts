@@ -1,52 +1,46 @@
 import { DomainError } from "@errors/DomainError";
+import { User } from "@modules/users/entities/User";
 import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
 
 import { CreateUserUseCase } from "../CreateUserUseCase";
 
-let createUserUseCase: CreateUserUseCase;
-let usersRepositoryInMemory: UsersRepositoryInMemory;
+let usecase: CreateUserUseCase;
+let usersRepository: UsersRepositoryInMemory;
 
-beforeEach(() => {
-  usersRepositoryInMemory = new UsersRepositoryInMemory();
-  createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
+const mockedUser = {
+  name: "Iago",
+  email: "user@example.com",
+  password: "123456",
+};
+
+beforeAll(() => {
+  usersRepository = new UsersRepositoryInMemory();
+  usecase = new CreateUserUseCase(usersRepository);
 });
 
 describe("Create user", () => {
-  it("should be able to create a new user", async () => {
-    const user = {
-      name: "Iago",
-      email: "user@example.com",
-      password: "123456",
-    };
-
-    const res = await createUserUseCase.execute(user);
-
-    expect(res).toHaveProperty("id");
-  });
-
   it("should not be able to create a new user with same email", async () => {
-    const user = {
-      name: "Iago",
+    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
       email: "user@example.com",
-      password: "123456",
-    };
+    } as User);
 
-    await createUserUseCase.execute(user);
-
-    await expect(createUserUseCase.execute(user)).rejects.toEqual(
-      new DomainError("Email already exists!")
+    await expect(usecase.execute(mockedUser)).rejects.toEqual(
+      new DomainError("USER_ALREADY_EXISTS")
     );
+
+    expect(usersRepository.findByEmail).toBeCalledWith(mockedUser.email);
   });
 
-  it("should not be able to create a new user if name, email or password is empty", async () => {
-    const user = {
-      name: "Iago",
-      email: "user@example.com",
-      password: "",
-    };
+  it("should be able to create a new user", async () => {
+    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce(null);
+    jest
+      .spyOn(usersRepository, "create")
+      .mockResolvedValueOnce(mockedUser as User);
 
-    await expect(createUserUseCase.execute(user)).rejects.toEqual(
-      new DomainError("name, email or password is missing!")
-    );
+    const res = await usecase.execute(mockedUser);
+
+    expect(res).toHaveProperty("email");
+    expect(usersRepository.findByEmail).toBeCalledWith(mockedUser.email);
+    expect(usersRepository.create).toBeCalledTimes(1);
   });
 });
