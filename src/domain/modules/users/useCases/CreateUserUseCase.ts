@@ -22,7 +22,7 @@ class CreateUserUseCase {
     const userAlreadyExists = await this.usersRepository.findByEmail(email);
 
     if (userAlreadyExists) {
-      throw new DomainError("Email already exists!", 400);
+      throw new DomainError("USER_ALREADY_EXISTS", 400);
     }
 
     const passwordHash = await hash(password, 8);
