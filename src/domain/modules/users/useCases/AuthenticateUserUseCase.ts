@@ -50,7 +50,6 @@ class AuthenticateUserUseCase {
     const user_courses = await this.coursesRepository.findByUserId(user.id);
     user.courses = user_courses;
 
-    console.log(process.env);
     const token = this.jwtProvider.generate(user.id);
 
     return {

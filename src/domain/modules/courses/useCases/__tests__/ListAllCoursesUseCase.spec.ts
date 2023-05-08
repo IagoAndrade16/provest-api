@@ -1,36 +1,26 @@
+import { Course } from "@modules/courses/entities/Course";
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 
-import { CreateCourseUseCase } from "../CreateCourseUseCase";
 import { ListAllCoursesUseCase } from "../ListAllCoursesUseCase";
 
-let listAllCoursesUseCase: ListAllCoursesUseCase;
-let createCourseUseCase: CreateCourseUseCase;
-let coursesRepositoryInMemory: CoursesRepositoryInMemory;
+let usecase: ListAllCoursesUseCase;
+let coursesRepository: CoursesRepositoryInMemory;
 
-describe("List all courses", () => {
-  beforeEach(() => {
-    coursesRepositoryInMemory = new CoursesRepositoryInMemory();
-    listAllCoursesUseCase = new ListAllCoursesUseCase(
-      coursesRepositoryInMemory
-    );
-    createCourseUseCase = new CreateCourseUseCase(coursesRepositoryInMemory);
-  });
+beforeEach(() => {
+  coursesRepository = new CoursesRepositoryInMemory();
+  usecase = new ListAllCoursesUseCase(coursesRepository);
+});
 
-  it("should be able list all courses", async () => {
-    await createCourseUseCase.execute({
-      name: "Course do Iago",
-      category: "Programação TS",
-      address: "Av. Retiro",
-      phone: "24998179466",
-      email: "curso@email.com.br",
-      description: "Novo curso!",
-      link: "https://app.rocketseat.com.br/ignite",
-      user_id: "123",
-    });
+it("should be able list all courses", async () => {
+  jest.spyOn(coursesRepository, "listAllCourses").mockResolvedValueOnce([
+    {
+      id: "2",
+    },
+  ] as Course[]);
 
-    const res = await listAllCoursesUseCase.execute();
+  const res = await usecase.execute();
 
-    expect(res).toHaveLength(1);
-    expect(res[0]).toHaveProperty("id");
-  });
+  expect(res).toHaveLength(1);
+  expect(res[0]).toHaveProperty("id");
+  expect(coursesRepository.listAllCourses).toHaveBeenCalledWith();
 });

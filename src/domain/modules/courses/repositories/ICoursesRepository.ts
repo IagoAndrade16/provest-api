@@ -10,3 +10,5 @@ export interface ICoursesRepository {
   findById(id: string): Promise<Course>;
   delete(id: string): Promise<void>;
 }
+
+export const coursesRepositoryAlias = "CoursesRepository";

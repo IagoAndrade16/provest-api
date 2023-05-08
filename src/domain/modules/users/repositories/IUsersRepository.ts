@@ -9,4 +9,6 @@ interface IUsersRepository {
   update(data: IUpdateUserDTO, id: string): Promise<void>;
 }
 
+export const usersRepositoryAlias = "UsersRepository";
+
 export { IUsersRepository };

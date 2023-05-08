@@ -15,7 +15,7 @@ export class UpdateUserInfoUseCase {
     const user = await this.usersRepository.findById(userId);
 
     if (!user) {
-      throw new DomainError("User not found!", 400);
+      throw new DomainError("USER_NOT_FOUND", 400);
     }
 
     await this.usersRepository.update(data, userId);

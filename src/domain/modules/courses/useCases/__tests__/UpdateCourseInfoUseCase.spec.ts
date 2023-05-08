@@ -1,120 +1,71 @@
 import { DomainError } from "@errors/DomainError";
+import { Course } from "@modules/courses/entities/Course";
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 
-import { CreateCourseUseCase } from "../CreateCourseUseCase";
 import { UpdateCourseInfoUseCase } from "../UpdateCourseInfoUseCase";
 
-let coursesRepositoryInMemory: CoursesRepositoryInMemory;
-let createCourseUseCase: CreateCourseUseCase;
-let updateCourseInfoUseCase: UpdateCourseInfoUseCase;
+let coursesRepository: CoursesRepositoryInMemory;
+let usecase: UpdateCourseInfoUseCase;
 
-describe("Alter course", () => {
-  beforeEach(() => {
-    coursesRepositoryInMemory = new CoursesRepositoryInMemory();
-    createCourseUseCase = new CreateCourseUseCase(coursesRepositoryInMemory);
-    updateCourseInfoUseCase = new UpdateCourseInfoUseCase(
-      coursesRepositoryInMemory
-    );
-  });
+beforeEach(() => {
+  coursesRepository = new CoursesRepositoryInMemory();
+  usecase = new UpdateCourseInfoUseCase(coursesRepository);
+});
 
-  it("should be able to alter course", async () => {
-    const course = await createCourseUseCase.execute({
-      name: "Course do Iago",
-      category: "Programação TS",
-      address: "Av. Retiro",
-      phone: "24998179466",
-      email: "curso@email.com.br",
-      description: "Novo curso!",
-      link: "https://app.rocketseat.com.br/ignite",
-      user_id: "123",
-    });
+it("should throw COURSE_NOT_FOUND if course does not exists", async () => {
+  jest.spyOn(coursesRepository, "findById").mockResolvedValueOnce(null);
 
-    const res = await updateCourseInfoUseCase.execute(
+  await expect(
+    usecase.execute(
       {
         name: "Course alterado",
       },
-      course.id,
+      "123",
       "123"
-    );
+    )
+  ).rejects.toEqual(new DomainError("COURSE_NOT_FOUND"));
+  expect(coursesRepository.findById).toHaveBeenCalledWith("123");
+});
 
-    expect(res).toHaveProperty("message");
-    expect(res).toHaveProperty("status");
-  });
+it("should thorw UNAUTHORIZED_UPDATE if userId !== course.userId", async () => {
+  jest.spyOn(coursesRepository, "findById").mockResolvedValueOnce({
+    user_id: "456",
+  } as Course);
 
-  it("should not be able to alter course does not exists", async () => {
-    await expect(
-      updateCourseInfoUseCase.execute(
-        {
-          name: "Course alterado",
-        },
-        "123",
-        "123"
-      )
-    ).rejects.toEqual(new DomainError("Course not found."));
-  });
+  await expect(
+    usecase.execute(
+      {
+        name: "Course alterado",
+      },
+      "123",
+      "321"
+    )
+  ).rejects.toEqual(new DomainError("UNAUTHORIZED_UPDATE"));
 
-  it("should not be able to alter course does not exists", async () => {
-    const course = await createCourseUseCase.execute({
-      name: "Course do Iago",
-      category: "Programação TS",
-      address: "Av. Retiro",
-      phone: "24998179466",
-      email: "curso@email.com.br",
-      description: "Novo curso!",
-      link: "https://app.rocketseat.com.br/ignite",
-      user_id: "123",
-    });
+  expect(coursesRepository.findById).toHaveBeenCalledWith("123");
+});
 
-    await expect(
-      updateCourseInfoUseCase.execute(
-        {
-          name: "Course alterado",
-        },
-        course.id,
-        "321"
-      )
-    ).rejects.toEqual(
-      new DomainError("This user does not update this course!")
-    );
-  });
+it("should be able to update course", async () => {
+  jest.spyOn(coursesRepository, "findById").mockResolvedValueOnce({
+    id: "1",
+    user_id: "1",
+  } as Course);
+  jest.spyOn(coursesRepository, "update").mockResolvedValueOnce(null);
 
-  it("should not be able to alter course does not exists", async () => {
-    const course = await createCourseUseCase.execute({
-      name: "Course do Iago",
-      category: "Programação TS",
-      address: "Av. Retiro",
-      phone: "24998179466",
-      email: "curso@email.com.br",
-      description: "Novo curso!",
-      link: "https://app.rocketseat.com.br/ignite",
-      user_id: "123",
-    });
+  await usecase.execute(
+    {
+      email: "course@email.com",
+    },
+    "1",
+    "1"
+  );
 
-    await expect(
-      updateCourseInfoUseCase.execute({}, course.id, "123")
-    ).rejects.toEqual(new DomainError("At least one parameter is required."));
-  });
-
-  it("should not be able to alter course does not exists", async () => {
-    const course = await createCourseUseCase.execute({
-      name: "Course do Iago",
-      category: "Programação TS",
-      address: "Av. Retiro",
-      phone: "24998179466",
-      email: "curso@email.com.br",
-      description: "Novo curso!",
-      link: "https://app.rocketseat.com.br/ignite",
-      user_id: "123",
-    });
-
-    await expect(
-      updateCourseInfoUseCase.execute(
-        {
-          name: "",
-        },
-        course.id,
-        "123"
-      )
-    ).rejects.toEqual(new DomainError("Property name cannot be null."));
-  });
+  expect(coursesRepository.findById).toHaveBeenCalledWith("1");
+  expect(coursesRepository.update).toHaveBeenCalledWith(
+    {
+      email: "course@email.com",
+    },
+    "1"
+  );
+  expect(coursesRepository.update).toHaveBeenCalledTimes(1);
 });
