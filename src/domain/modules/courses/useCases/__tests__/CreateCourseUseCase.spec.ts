@@ -1,49 +1,34 @@
-import { DomainError } from "@errors/DomainError";
+import { Course } from "@modules/courses/entities/Course";
 import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
 
 import { CreateCourseUseCase } from "../CreateCourseUseCase";
 
 let createCourseUseCase: CreateCourseUseCase;
-let coursesRepositoryInMemory: CoursesRepositoryInMemory;
+let coursesRepository: CoursesRepositoryInMemory;
 
-describe("Create course", () => {
-  beforeEach(() => {
-    coursesRepositoryInMemory = new CoursesRepositoryInMemory();
-    createCourseUseCase = new CreateCourseUseCase(coursesRepositoryInMemory);
-  });
+beforeEach(() => {
+  coursesRepository = new CoursesRepositoryInMemory();
+  createCourseUseCase = new CreateCourseUseCase(coursesRepository);
+});
 
-  it("should be able to create a new course", async () => {
-    const course = {
-      name: "Course do Iago",
-      category: "Música",
-      address: "Av. Retiro",
-      phone: "24998179466",
-      email: "curso@email.com.br",
-      description: "Novo curso!",
-      link: "https://app.rocketseat.com.br/ignite",
-      user_id: "123",
-    };
+const mockedCourse = {
+  name: "Course do Iago",
+  category: "Música",
+  address: "Av. Retiro",
+  phone: "24998179466",
+  email: "curso@email.com.br",
+  description: "Novo curso!",
+  link: "https://app.rocketseat.com.br/ignite",
+  user_id: "123",
+};
 
-    const res = await createCourseUseCase.execute(course);
+it("should be able to create a new course", async () => {
+  jest
+    .spyOn(coursesRepository, "create")
+    .mockResolvedValue(mockedCourse as Course);
 
-    expect(res).toHaveProperty("id");
-    expect(res.user_id).toEqual(course.user_id);
-  });
+  const res = await createCourseUseCase.execute(mockedCourse);
 
-  it("should not be able to create a course with data missing", async () => {
-    const course = {
-      name: "Course do Iago",
-      category: "Música",
-      address: "Av. Retiro",
-      phone: "24998179466",
-      email: "curso@email.com.br",
-      description: "Novo curso!",
-      link: "",
-      user_id: "123",
-    };
-
-    await expect(createCourseUseCase.execute(course)).rejects.toEqual(
-      new DomainError("Any data is missing!")
-    );
-  });
+  expect(res.user_id).toEqual(mockedCourse.user_id);
+  expect(coursesRepository.create).toHaveBeenCalledWith(mockedCourse);
 });

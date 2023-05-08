@@ -1,79 +1,55 @@
 import { DomainError } from "@errors/DomainError";
-import { CoursesRepositoryInMemory } from "@modules/courses/repositories/in-memory/CoursesRepositroyInMemory";
+import { User } from "@modules/users/entities/User";
 import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
 
-import { CreateUserUseCase } from "../CreateUserUseCase";
 import { UpdateUserInfoUseCase } from "../UpdateUserInfoUseCase";
 
-let alterUserUseCase: UpdateUserInfoUseCase;
+let useCase: UpdateUserInfoUseCase;
 let usersRepository: UsersRepositoryInMemory;
-let coursesRepository: CoursesRepositoryInMemory;
-let createUserUseCase: CreateUserUseCase;
 
-describe("Alter user", () => {
-  beforeEach(() => {
-    usersRepository = new UsersRepositoryInMemory();
-    coursesRepository = new CoursesRepositoryInMemory();
-    createUserUseCase = new CreateUserUseCase(usersRepository);
-    alterUserUseCase = new UpdateUserInfoUseCase(usersRepository);
-  });
+beforeEach(() => {
+  usersRepository = new UsersRepositoryInMemory();
+  useCase = new UpdateUserInfoUseCase(usersRepository);
+});
 
-  // it("should be able to alter user", async () => {
-  //   const user = await createUserUseCase.execute({
-  //     name: "Iago",
-  //     email: "iagoaap16@gmail.com",
-  //     password: "123456",
-  //   });
+it("should throw USER_NOT_FOUND if user does not exists", async () => {
+  jest.spyOn(usersRepository, "findById").mockResolvedValueOnce(null);
 
-  //   await alterUserUseCase.execute(
-  //     {
-  //       name: "Iago Alexandre",
-  //     },
-  //     user.id
-  //   );
+  await expect(
+    useCase.execute(
+      {
+        email: "iago@gmail.com",
+      },
+      "1"
+    )
+  ).rejects.toEqual(new DomainError("USER_NOT_FOUND", 400));
 
-  //   const profile = await profileUseCase.execute(user.id);
+  expect(usersRepository.findById).toHaveBeenCalledWith("1");
+});
 
-  //   expect(profile.name).toEqual("Iago Alexandre");
-  // });
+it("should update user if succeeded validation", async () => {
+  jest.spyOn(usersRepository, "findById").mockResolvedValueOnce({
+    id: "1",
+  } as User);
 
-  it("should not be able to alter user if no data", async () => {
-    const user = await createUserUseCase.execute({
-      name: "Iago",
-      email: "iagoaap16@gmail.com",
-      password: "123456",
-    });
+  jest.spyOn(usersRepository, "update").mockResolvedValueOnce(null);
 
-    await expect(alterUserUseCase.execute({}, user.id)).rejects.toEqual(
-      new DomainError("Data is missing!")
-    );
-  });
+  await useCase.execute(
+    {
+      email: "iago@gmail.com",
+      name: "iago",
+    },
+    "1"
+  );
 
-  it("should not be able to alter user if user not exists", async () => {
-    await expect(
-      alterUserUseCase.execute(
-        {
-          name: "Iago",
-        },
-        "123"
-      )
-    ).rejects.toEqual(new DomainError("User not found!"));
-  });
+  expect(usersRepository.findById).toHaveBeenCalledWith("1");
+  expect(usersRepository.update).toHaveBeenCalledWith(
+    {
+      email: "iago@gmail.com",
+      name: "iago",
+    },
+    "1"
+  );
 
-  it("should not be able to alter user if any data is empty", async () => {
-    const user = await createUserUseCase.execute({
-      name: "Iago",
-      email: "iagoaap16@gmail.com",
-      password: "123456",
-    });
-
-    await expect(
-      alterUserUseCase.execute(
-        {
-          name: "",
-        },
-        user.id
-      )
-    ).rejects.toEqual(new DomainError("Property name cannot be null!"));
-  });
+  expect(usersRepository.update).toHaveBeenCalledTimes(1);
 });

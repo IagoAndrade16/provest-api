@@ -71,5 +71,8 @@ describe("Auth User", () => {
 
     expect(res).toHaveProperty("auth");
     expect(res).toHaveProperty("user");
+    expect(usersRepository.findByEmail).toHaveBeenCalledWith(
+      "iagoaap@gmail.com"
+    );
   });
 });
