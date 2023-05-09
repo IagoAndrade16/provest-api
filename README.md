@@ -28,3 +28,8 @@ A back-end for a older project that I make a few years ago
 ## Status
 
 V1 - finished.
+
+V2 - In progress...
+- Yup validation
+- Refactoring tests
+- Change project structure
