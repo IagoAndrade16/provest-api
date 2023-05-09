@@ -1,18 +1,15 @@
+import { JwtProviderImpl } from "@infra/providers/implementations/JwtProviderImpl";
 import { NextFunction, Request, Response } from "express";
-import { verify } from "jsonwebtoken";
 
-import auth from "../../infra/config/auth";
 import { DomainError } from "../errors/DomainError";
-
-interface IPayload {
-  sub: string;
-}
 
 export async function ensureAuthenticated(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
+  const jwtProvider = new JwtProviderImpl();
+
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
@@ -22,10 +19,10 @@ export async function ensureAuthenticated(
   const [, token] = authHeader.split("Bearer ");
 
   try {
-    const { sub: user_id } = verify(token, auth.secret_token) as IPayload;
+    const userId = jwtProvider.verify(token);
 
     request.user = {
-      id: user_id,
+      id: userId,
     };
 
     return next();

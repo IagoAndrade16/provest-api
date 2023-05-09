@@ -40,82 +40,102 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_1 = require("@infra/app");
-var bcryptjs_1 = require("bcryptjs");
 var supertest_1 = __importDefault(require("supertest"));
 var typeorm_1 = require("typeorm");
 var uuid_1 = require("uuid");
+var TestUtils_1 = require("../../../../utils/TestUtils");
 var connection;
-describe("Auth user", function () {
-    beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var id, password;
+var userId = (0, uuid_1.v4)();
+var authToken;
+beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, typeorm_1.createConnection)()];
+            case 1:
+                connection = _a.sent();
+                return [4 /*yield*/, connection.runMigrations()];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, TestUtils_1.TestUtils.generateBearerToken(userId)];
+            case 3:
+                authToken = _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, connection.dropDatabase()];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, connection.close()];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+describe("Schema validation", function () {
+    it("should return 401 if unauthorized authenticate", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, typeorm_1.createConnection)()];
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                        .delete("/courses/123")
+                        .send()
+                        .set({ Authorization: "Bearer 123" })];
                 case 1:
-                    connection = _a.sent();
-                    return [4 /*yield*/, connection.runMigrations()];
-                case 2:
-                    _a.sent();
-                    id = (0, uuid_1.v4)();
-                    return [4 /*yield*/, (0, bcryptjs_1.hash)("admin", 8)];
-                case 3:
-                    password = _a.sent();
-                    return [4 /*yield*/, connection.query("INSERT INTO USERS(id, name, email, password, created_at, updated_at)\n        values('".concat(id, "', 'Controller', 'admin@provest.com.br', '").concat(password, "', 'now()', 'now()')\n      "))];
-                case 4:
-                    _a.sent();
+                    response = _a.sent();
+                    expect(response.status).toBe(401);
+                    expect(response.body.message).toEqual("Invalid token");
                     return [2 /*return*/];
             }
         });
     }); });
-    afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    it("should require a necessary parameters", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, connection.dropDatabase()];
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                        .delete("/courses/".concat("a".repeat(65)))
+                        .send()
+                        .set({ Authorization: authToken })];
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, connection.close()];
-                case 2:
-                    _a.sent();
+                    response = _a.sent();
+                    expect(response.status).toBe(400);
+                    expect(response.body).toHaveProperty("course_id");
                     return [2 /*return*/];
             }
         });
     }); });
+});
+describe("Return values", function () {
     it("should be able to delete course", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var rs, token, course, response;
+        var course, response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post("/users/session").send({
-                        email: "admin@provest.com.br",
-                        password: "admin",
-                    })];
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                        .post("/courses")
+                        .send({
+                        name: "Course do Iago",
+                        category: "Programação TS",
+                        address: "Av. Retiro",
+                        phone: "24998179466",
+                        email: "curso@email.com.br",
+                        description: "Novo curso!",
+                        link: "https://app.rocketseat.com.br/ignite",
+                    })
+                        .set({ Authorization: authToken })];
                 case 1:
-                    rs = _a.sent();
-                    token = rs.body.auth.token;
+                    course = (_a.sent()).body;
                     return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
-                            .post("/courses")
-                            .send({
-                            name: "Course do Iago",
-                            category: "Programação TS",
-                            address: "Av. Retiro",
-                            phone: "24998179466",
-                            email: "curso@email.com.br",
-                            description: "Novo curso!",
-                            link: "https://app.rocketseat.com.br/ignite",
-                        })
-                            .set({ Authorization: "Bearer ".concat(token) })];
+                            .delete("/courses/".concat(course.id))
+                            .send({})
+                            .set({ Authorization: authToken })];
                 case 2:
-                    course = _a.sent();
-                    return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
-                            .delete("/courses/".concat(course.body.id))
-                            .send()
-                            .set({ Authorization: "Bearer ".concat(token) })];
-                case 3:
                     response = _a.sent();
                     expect(response.status).toBe(200);
-                    expect(response.body).toEqual({
-                        status: "SUCCESS",
-                        message: "Course deleted successfully",
-                    });
                     return [2 /*return*/];
             }
         });

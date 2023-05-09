@@ -35,27 +35,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ensureAuthenticated = void 0;
-var jsonwebtoken_1 = require("jsonwebtoken");
-var auth_1 = __importDefault(require("../../infra/config/auth"));
+var JwtProviderImpl_1 = require("@infra/providers/implementations/JwtProviderImpl");
 var DomainError_1 = require("../errors/DomainError");
 function ensureAuthenticated(request, response, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var authHeader, _a, token, user_id;
+        var jwtProvider, authHeader, _a, token, userId;
         return __generator(this, function (_b) {
+            jwtProvider = new JwtProviderImpl_1.JwtProviderImpl();
             authHeader = request.headers.authorization;
             if (!authHeader) {
                 throw new DomainError_1.DomainError("Token missing", 401);
             }
             _a = authHeader.split("Bearer "), token = _a[1];
             try {
-                user_id = (0, jsonwebtoken_1.verify)(token, auth_1.default.secret_token).sub;
+                userId = jwtProvider.verify(token);
                 request.user = {
-                    id: user_id,
+                    id: userId,
                 };
                 return [2 /*return*/, next()];
             }
