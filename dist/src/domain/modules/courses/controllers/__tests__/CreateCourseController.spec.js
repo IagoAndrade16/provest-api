@@ -40,79 +40,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_1 = require("@infra/app");
-var bcryptjs_1 = require("bcryptjs");
 var supertest_1 = __importDefault(require("supertest"));
 var typeorm_1 = require("typeorm");
 var uuid_1 = require("uuid");
+var TestUtils_1 = require("../../../../utils/TestUtils");
 var connection;
-describe("Auth user", function () {
-    beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var id, password;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, typeorm_1.createConnection)()];
-                case 1:
-                    connection = _a.sent();
-                    return [4 /*yield*/, connection.runMigrations()];
-                case 2:
-                    _a.sent();
-                    id = (0, uuid_1.v4)();
-                    return [4 /*yield*/, (0, bcryptjs_1.hash)("admin", 8)];
-                case 3:
-                    password = _a.sent();
-                    return [4 /*yield*/, connection.query("INSERT INTO USERS(id, name, email, password, created_at, updated_at)\n        values('".concat(id, "', 'Controller', 'admin@provest.com.br', '").concat(password, "', 'now()', 'now()')\n      "))];
-                case 4:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, connection.dropDatabase()];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, connection.close()];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should be able to create a new course", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var rs, token, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post("/users/session").send({
-                        email: "admin@provest.com.br",
-                        password: "admin",
-                    })];
-                case 1:
-                    rs = _a.sent();
-                    token = rs.body.auth.token;
-                    return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
-                            .post("/courses")
-                            .send({
-                            name: "Course do Iago",
-                            category: "Programação TS",
-                            address: "Av. Retiro",
-                            phone: "24998179466",
-                            email: "curso@email.com.br",
-                            description: "Novo curso!",
-                            link: "https://app.rocketseat.com.br/ignite",
-                        })
-                            .set({ Authorization: "Bearer ".concat(token) })];
-                case 2:
-                    response = _a.sent();
-                    expect(response.status).toBe(201);
-                    expect(response.body).toHaveProperty("id");
-                    expect(response.body.name).toEqual("Course do Iago");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should not be able to create a new course if !auth", function () { return __awaiter(void 0, void 0, void 0, function () {
+var userId = (0, uuid_1.v4)();
+var authToken;
+beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, typeorm_1.createConnection)()];
+            case 1:
+                connection = _a.sent();
+                return [4 /*yield*/, connection.runMigrations()];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, TestUtils_1.TestUtils.generateBearerToken(userId)];
+            case 3:
+                authToken = _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, connection.dropDatabase()];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, connection.close()];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+describe("Schema validation", function () {
+    it("should return 401 if unauthorized authenticate", function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -132,6 +97,109 @@ describe("Auth user", function () {
                     response = _a.sent();
                     expect(response.status).toBe(401);
                     expect(response.body.message).toEqual("Invalid token");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("should be require a necessary parameters", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                        .post("/courses")
+                        .send({})
+                        .set({ Authorization: authToken })];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toBe(400);
+                    expect(response.body).toHaveProperty("name");
+                    expect(response.body).toHaveProperty("category");
+                    expect(response.body).toHaveProperty("address");
+                    expect(response.body).toHaveProperty("phone");
+                    expect(response.body).toHaveProperty("email");
+                    expect(response.body).toHaveProperty("description");
+                    expect(response.body).toHaveProperty("link");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    describe("email", function () {
+        it("should be require a valid email", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                            .post("/courses")
+                            .send({
+                            name: "Course do Iago",
+                            category: "Programação TS",
+                            address: "Av. Retiro",
+                            phone: "24998179466",
+                            email: "email.com.br",
+                            description: "Novo curso!",
+                            link: "https://app.rocketseat.com.br/ignite",
+                        })
+                            .set({ Authorization: authToken })];
+                    case 1:
+                        response = _a.sent();
+                        expect(response.status).toBe(400);
+                        expect(response.body).toHaveProperty("email");
+                        expect(response.body).not.toHaveProperty("name");
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe("link", function () {
+        it("should be require a valid link", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                            .post("/courses")
+                            .send({
+                            name: "Course do Iago",
+                            category: "Programação TS",
+                            address: "Av. Retiro",
+                            phone: "24998179466",
+                            email: "iago@email.com.br",
+                            description: "Novo curso!",
+                            link: "a".repeat(50),
+                        })
+                            .set({ Authorization: authToken })];
+                    case 1:
+                        response = _a.sent();
+                        expect(response.status).toBe(400);
+                        expect(response.body).toHaveProperty("link");
+                        expect(response.body).not.toHaveProperty("email");
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+});
+describe("Return values", function () {
+    it("should be able to create a new course", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                        .post("/courses")
+                        .send({
+                        name: "Course do Iago",
+                        category: "Programação TS",
+                        address: "Av. Retiro",
+                        phone: "24998179466",
+                        email: "curso@email.com.br",
+                        description: "Novo curso!",
+                        link: "https://app.rocketseat.com.br/ignite",
+                    })
+                        .set({ Authorization: authToken })];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toBe(201);
+                    expect(response.body).toHaveProperty("id");
+                    expect(response.body.name).toEqual("Course do Iago");
                     return [2 /*return*/];
             }
         });

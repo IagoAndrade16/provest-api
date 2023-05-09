@@ -37,40 +37,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var CoursesRepositroyInMemory_1 = require("@modules/courses/repositories/in-memory/CoursesRepositroyInMemory");
-var CreateCourseUseCase_1 = require("../CreateCourseUseCase");
 var ListAllCoursesUseCase_1 = require("../ListAllCoursesUseCase");
-var listAllCoursesUseCase;
-var createCourseUseCase;
-var coursesRepositoryInMemory;
-describe("List all courses", function () {
-    beforeEach(function () {
-        coursesRepositoryInMemory = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
-        listAllCoursesUseCase = new ListAllCoursesUseCase_1.ListAllCoursesUseCase(coursesRepositoryInMemory);
-        createCourseUseCase = new CreateCourseUseCase_1.CreateCourseUseCase(coursesRepositoryInMemory);
-    });
-    it("should be able list all courses", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var res;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createCourseUseCase.execute({
-                        name: "Course do Iago",
-                        category: "Programação TS",
-                        address: "Av. Retiro",
-                        phone: "24998179466",
-                        email: "curso@email.com.br",
-                        description: "Novo curso!",
-                        link: "https://app.rocketseat.com.br/ignite",
-                        user_id: "123",
-                    })];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, listAllCoursesUseCase.execute()];
-                case 2:
-                    res = _a.sent();
-                    expect(res).toHaveLength(1);
-                    expect(res[0]).toHaveProperty("id");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+var usecase;
+var coursesRepository;
+beforeEach(function () {
+    coursesRepository = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
+    usecase = new ListAllCoursesUseCase_1.ListAllCoursesUseCase(coursesRepository);
 });
+it("should be able list all courses", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var res;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jest.spyOn(coursesRepository, "listAllCourses").mockResolvedValueOnce([
+                    {
+                        id: "2",
+                    },
+                ]);
+                return [4 /*yield*/, usecase.execute()];
+            case 1:
+                res = _a.sent();
+                expect(res).toHaveLength(1);
+                expect(res[0]).toHaveProperty("id");
+                expect(coursesRepository.listAllCourses).toHaveBeenCalledWith();
+                return [2 /*return*/];
+        }
+    });
+}); });

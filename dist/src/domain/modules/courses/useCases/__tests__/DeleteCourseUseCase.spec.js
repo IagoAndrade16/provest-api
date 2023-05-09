@@ -38,84 +38,66 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var DomainError_1 = require("@errors/DomainError");
 var CoursesRepositroyInMemory_1 = require("@modules/courses/repositories/in-memory/CoursesRepositroyInMemory");
-var CreateCourseUseCase_1 = require("../CreateCourseUseCase");
 var DeleteCourseUseCase_1 = require("../DeleteCourseUseCase");
 var coursesRepository;
-var deleteCourseUseCase;
-var createCourseUseCase;
-describe("Delete course", function () {
-    beforeEach(function () {
-        coursesRepository = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
-        deleteCourseUseCase = new DeleteCourseUseCase_1.DeleteCourseUseCase(coursesRepository);
-        createCourseUseCase = new CreateCourseUseCase_1.CreateCourseUseCase(coursesRepository);
-    });
-    it("should be able to delete a course", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var course, deleted;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createCourseUseCase.execute({
-                        name: "Course do Iago",
-                        category: "Programação TS",
-                        address: "Av. Retiro",
-                        phone: "24998179466",
-                        email: "curso@email.com.br",
-                        description: "Novo curso!",
-                        link: "https://app.rocketseat.com.br/ignite",
-                        user_id: "123",
-                    })];
-                case 1:
-                    course = _a.sent();
-                    return [4 /*yield*/, deleteCourseUseCase.execute({
-                            user_id: course.user_id,
-                            course_id: course.id,
-                        })];
-                case 2:
-                    deleted = _a.sent();
-                    expect(deleted).toEqual({
-                        status: "SUCCESS",
-                        message: "Course deleted successfully",
-                    });
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should not be able to delete a course if course does not exists", function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, expect(deleteCourseUseCase.execute({
-                        user_id: "123",
-                        course_id: "123",
-                    })).rejects.toEqual(new DomainError_1.DomainError("Course not found"))];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should not be able to delete a course if user doens't have this course", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var course;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createCourseUseCase.execute({
-                        name: "Course do Iago",
-                        category: "Programação TS",
-                        address: "Av. Retiro",
-                        phone: "24998179466",
-                        email: "curso@email.com.br",
-                        description: "Novo curso!",
-                        link: "https://app.rocketseat.com.br/ignite",
-                        user_id: "123",
-                    })];
-                case 1:
-                    course = _a.sent();
-                    return [4 /*yield*/, expect(deleteCourseUseCase.execute({
-                            user_id: "321",
-                            course_id: course.id,
-                        })).rejects.toEqual(new DomainError_1.DomainError("This course does not be delete for this user!"))];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+var usecase;
+beforeEach(function () {
+    coursesRepository = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
+    usecase = new DeleteCourseUseCase_1.DeleteCourseUseCase(coursesRepository);
 });
+it("should not be able to delete a course if course does not exists", function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jest.spyOn(coursesRepository, "findById").mockResolvedValueOnce(null);
+                return [4 /*yield*/, expect(usecase.execute({
+                        user_id: "1",
+                        course_id: "1",
+                    })).rejects.toEqual(new DomainError_1.DomainError("COURSE_NOT_FOUND"))];
+            case 1:
+                _a.sent();
+                expect(coursesRepository.findById).toHaveBeenCalledWith("1");
+                return [2 /*return*/];
+        }
+    });
+}); });
+it("should not be able to delete a course if user doens't have this course", function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jest.spyOn(coursesRepository, "findById").mockResolvedValueOnce({
+                    user_id: "2",
+                });
+                return [4 /*yield*/, expect(usecase.execute({
+                        user_id: "1",
+                        course_id: "1",
+                    })).rejects.toEqual(new DomainError_1.DomainError("UNAUTHORIZED_DELETE"))];
+            case 1:
+                _a.sent();
+                expect(coursesRepository.findById).toHaveBeenCalledWith("1");
+                return [2 /*return*/];
+        }
+    });
+}); });
+it("should be able to delete a course", function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jest.spyOn(coursesRepository, "findById").mockResolvedValueOnce({
+                    id: "1",
+                    user_id: "1",
+                });
+                jest.spyOn(coursesRepository, "delete").mockResolvedValueOnce(null);
+                return [4 /*yield*/, usecase.execute({
+                        course_id: "1",
+                        user_id: "1",
+                    })];
+            case 1:
+                _a.sent();
+                expect(coursesRepository.findById).toHaveBeenCalledWith("1");
+                expect(coursesRepository.delete).toHaveBeenCalledTimes(1);
+                expect(coursesRepository.delete).toHaveBeenCalledWith("1");
+                return [2 /*return*/];
+        }
+    });
+}); });

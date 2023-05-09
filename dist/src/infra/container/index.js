@@ -2,9 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var JwtProviderImpl_1 = require("@infra/providers/implementations/JwtProviderImpl");
 var JwtProvider_1 = require("@infra/providers/JwtProvider");
+var ICoursesRepository_1 = require("@modules/courses/repositories/ICoursesRepository");
 var CoursesRepository_1 = require("@modules/courses/repositories/implementations/CoursesRepository");
 var UsersRepository_1 = require("@modules/users/repositories/implementations/UsersRepository");
+var IUsersRepository_1 = require("@modules/users/repositories/IUsersRepository");
 var tsyringe_1 = require("tsyringe");
-tsyringe_1.container.registerSingleton("UsersRepository", UsersRepository_1.UsersRepository);
-tsyringe_1.container.registerSingleton("CoursesRepository", CoursesRepository_1.CoursesRepository);
+tsyringe_1.container.registerSingleton(IUsersRepository_1.usersRepositoryAlias, UsersRepository_1.UsersRepository);
+tsyringe_1.container.registerSingleton(ICoursesRepository_1.coursesRepositoryAlias, CoursesRepository_1.CoursesRepository);
 tsyringe_1.container.registerSingleton(JwtProvider_1.JwtProviderAlias, JwtProviderImpl_1.JwtProviderImpl);

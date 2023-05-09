@@ -64,7 +64,7 @@ var UpdateUserInfoUseCase = /** @class */ (function () {
                     case 1:
                         user = _a.sent();
                         if (!user) {
-                            throw new DomainError_1.DomainError("User not found!", 400);
+                            throw new DomainError_1.DomainError("USER_NOT_FOUND", 400);
                         }
                         return [4 /*yield*/, this.usersRepository.update(data, userId)];
                     case 2:

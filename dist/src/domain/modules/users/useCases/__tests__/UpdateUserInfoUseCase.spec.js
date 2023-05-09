@@ -37,84 +37,50 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var DomainError_1 = require("@errors/DomainError");
-var CoursesRepositroyInMemory_1 = require("@modules/courses/repositories/in-memory/CoursesRepositroyInMemory");
 var UsersRepositoryIMemory_1 = require("@modules/users/repositories/in-memory/UsersRepositoryIMemory");
-var CreateUserUseCase_1 = require("../CreateUserUseCase");
 var UpdateUserInfoUseCase_1 = require("../UpdateUserInfoUseCase");
-var alterUserUseCase;
+var useCase;
 var usersRepository;
-var coursesRepository;
-var createUserUseCase;
-describe("Alter user", function () {
-    beforeEach(function () {
-        usersRepository = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
-        coursesRepository = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
-        createUserUseCase = new CreateUserUseCase_1.CreateUserUseCase(usersRepository);
-        alterUserUseCase = new UpdateUserInfoUseCase_1.UpdateUserInfoUseCase(usersRepository);
-    });
-    // it("should be able to alter user", async () => {
-    //   const user = await createUserUseCase.execute({
-    //     name: "Iago",
-    //     email: "iagoaap16@gmail.com",
-    //     password: "123456",
-    //   });
-    //   await alterUserUseCase.execute(
-    //     {
-    //       name: "Iago Alexandre",
-    //     },
-    //     user.id
-    //   );
-    //   const profile = await profileUseCase.execute(user.id);
-    //   expect(profile.name).toEqual("Iago Alexandre");
-    // });
-    it("should not be able to alter user if no data", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var user;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createUserUseCase.execute({
-                        name: "Iago",
-                        email: "iagoaap16@gmail.com",
-                        password: "123456",
-                    })];
-                case 1:
-                    user = _a.sent();
-                    return [4 /*yield*/, expect(alterUserUseCase.execute({}, user.id)).rejects.toEqual(new DomainError_1.DomainError("Data is missing!"))];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should not be able to alter user if user not exists", function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, expect(alterUserUseCase.execute({
-                        name: "Iago",
-                    }, "123")).rejects.toEqual(new DomainError_1.DomainError("User not found!"))];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should not be able to alter user if any data is empty", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var user;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createUserUseCase.execute({
-                        name: "Iago",
-                        email: "iagoaap16@gmail.com",
-                        password: "123456",
-                    })];
-                case 1:
-                    user = _a.sent();
-                    return [4 /*yield*/, expect(alterUserUseCase.execute({
-                            name: "",
-                        }, user.id)).rejects.toEqual(new DomainError_1.DomainError("Property name cannot be null!"))];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+beforeEach(function () {
+    usersRepository = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
+    useCase = new UpdateUserInfoUseCase_1.UpdateUserInfoUseCase(usersRepository);
 });
+it("should throw USER_NOT_FOUND if user does not exists", function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jest.spyOn(usersRepository, "findById").mockResolvedValueOnce(null);
+                return [4 /*yield*/, expect(useCase.execute({
+                        email: "iago@gmail.com",
+                    }, "1")).rejects.toEqual(new DomainError_1.DomainError("USER_NOT_FOUND", 400))];
+            case 1:
+                _a.sent();
+                expect(usersRepository.findById).toHaveBeenCalledWith("1");
+                return [2 /*return*/];
+        }
+    });
+}); });
+it("should update user if succeeded validation", function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jest.spyOn(usersRepository, "findById").mockResolvedValueOnce({
+                    id: "1",
+                });
+                jest.spyOn(usersRepository, "update").mockResolvedValueOnce(null);
+                return [4 /*yield*/, useCase.execute({
+                        email: "iago@gmail.com",
+                        name: "iago",
+                    }, "1")];
+            case 1:
+                _a.sent();
+                expect(usersRepository.findById).toHaveBeenCalledWith("1");
+                expect(usersRepository.update).toHaveBeenCalledWith({
+                    email: "iago@gmail.com",
+                    name: "iago",
+                }, "1");
+                expect(usersRepository.update).toHaveBeenCalledTimes(1);
+                return [2 /*return*/];
+        }
+    });
+}); });

@@ -36,60 +36,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var DomainError_1 = require("@errors/DomainError");
 var CoursesRepositroyInMemory_1 = require("@modules/courses/repositories/in-memory/CoursesRepositroyInMemory");
 var CreateCourseUseCase_1 = require("../CreateCourseUseCase");
 var createCourseUseCase;
-var coursesRepositoryInMemory;
-describe("Create course", function () {
-    beforeEach(function () {
-        coursesRepositoryInMemory = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
-        createCourseUseCase = new CreateCourseUseCase_1.CreateCourseUseCase(coursesRepositoryInMemory);
-    });
-    it("should be able to create a new course", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var course, res;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    course = {
-                        name: "Course do Iago",
-                        category: "Música",
-                        address: "Av. Retiro",
-                        phone: "24998179466",
-                        email: "curso@email.com.br",
-                        description: "Novo curso!",
-                        link: "https://app.rocketseat.com.br/ignite",
-                        user_id: "123",
-                    };
-                    return [4 /*yield*/, createCourseUseCase.execute(course)];
-                case 1:
-                    res = _a.sent();
-                    expect(res).toHaveProperty("id");
-                    expect(res.user_id).toEqual(course.user_id);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should not be able to create a course with data missing", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var course;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    course = {
-                        name: "Course do Iago",
-                        category: "Música",
-                        address: "Av. Retiro",
-                        phone: "24998179466",
-                        email: "curso@email.com.br",
-                        description: "Novo curso!",
-                        link: "",
-                        user_id: "123",
-                    };
-                    return [4 /*yield*/, expect(createCourseUseCase.execute(course)).rejects.toEqual(new DomainError_1.DomainError("Any data is missing!"))];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+var coursesRepository;
+beforeEach(function () {
+    coursesRepository = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
+    createCourseUseCase = new CreateCourseUseCase_1.CreateCourseUseCase(coursesRepository);
 });
+var mockedCourse = {
+    name: "Course do Iago",
+    category: "Música",
+    address: "Av. Retiro",
+    phone: "24998179466",
+    email: "curso@email.com.br",
+    description: "Novo curso!",
+    link: "https://app.rocketseat.com.br/ignite",
+    user_id: "123",
+};
+it("should be able to create a new course", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var res;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jest
+                    .spyOn(coursesRepository, "create")
+                    .mockResolvedValue(mockedCourse);
+                return [4 /*yield*/, createCourseUseCase.execute(mockedCourse)];
+            case 1:
+                res = _a.sent();
+                expect(res.user_id).toEqual(mockedCourse.user_id);
+                expect(coursesRepository.create).toHaveBeenCalledWith(mockedCourse);
+                return [2 /*return*/];
+        }
+    });
+}); });

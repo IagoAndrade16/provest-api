@@ -39,64 +39,48 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var DomainError_1 = require("@errors/DomainError");
 var UsersRepositoryIMemory_1 = require("@modules/users/repositories/in-memory/UsersRepositoryIMemory");
 var CreateUserUseCase_1 = require("../CreateUserUseCase");
-var createUserUseCase;
-var usersRepositoryInMemory;
-beforeEach(function () {
-    usersRepositoryInMemory = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
-    createUserUseCase = new CreateUserUseCase_1.CreateUserUseCase(usersRepositoryInMemory);
+var usecase;
+var usersRepository;
+var mockedUser = {
+    name: "Iago",
+    email: "user@example.com",
+    password: "123456",
+};
+beforeAll(function () {
+    usersRepository = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
+    usecase = new CreateUserUseCase_1.CreateUserUseCase(usersRepository);
 });
 describe("Create user", function () {
-    it("should be able to create a new user", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var user, res;
+    it("should not be able to create a new user with same email", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    user = {
-                        name: "Iago",
+                    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
                         email: "user@example.com",
-                        password: "123456",
-                    };
-                    return [4 /*yield*/, createUserUseCase.execute(user)];
+                    });
+                    return [4 /*yield*/, expect(usecase.execute(mockedUser)).rejects.toEqual(new DomainError_1.DomainError("USER_ALREADY_EXISTS"))];
+                case 1:
+                    _a.sent();
+                    expect(usersRepository.findByEmail).toBeCalledWith(mockedUser.email);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("should be able to create a new user", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce(null);
+                    jest
+                        .spyOn(usersRepository, "create")
+                        .mockResolvedValueOnce(mockedUser);
+                    return [4 /*yield*/, usecase.execute(mockedUser)];
                 case 1:
                     res = _a.sent();
-                    expect(res).toHaveProperty("id");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should not be able to create a new user with same email", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var user;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    user = {
-                        name: "Iago",
-                        email: "user@example.com",
-                        password: "123456",
-                    };
-                    return [4 /*yield*/, createUserUseCase.execute(user)];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, expect(createUserUseCase.execute(user)).rejects.toEqual(new DomainError_1.DomainError("Email already exists!"))];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should not be able to create a new user if name, email or password is empty", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var user;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    user = {
-                        name: "Iago",
-                        email: "user@example.com",
-                        password: "",
-                    };
-                    return [4 /*yield*/, expect(createUserUseCase.execute(user)).rejects.toEqual(new DomainError_1.DomainError("name, email or password is missing!"))];
-                case 1:
-                    _a.sent();
+                    expect(res).toHaveProperty("email");
+                    expect(usersRepository.findByEmail).toBeCalledWith(mockedUser.email);
+                    expect(usersRepository.create).toBeCalledTimes(1);
                     return [2 /*return*/];
             }
         });

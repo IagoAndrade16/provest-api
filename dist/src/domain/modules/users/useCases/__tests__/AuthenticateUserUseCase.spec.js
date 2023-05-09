@@ -40,81 +40,82 @@ var DomainError_1 = require("@errors/DomainError");
 var JwtProviderImpl_1 = require("@infra/providers/implementations/JwtProviderImpl");
 var CoursesRepositroyInMemory_1 = require("@modules/courses/repositories/in-memory/CoursesRepositroyInMemory");
 var UsersRepositoryIMemory_1 = require("@modules/users/repositories/in-memory/UsersRepositoryIMemory");
+var bcryptjs_1 = require("bcryptjs");
 var AuthenticateUserUseCase_1 = require("../AuthenticateUserUseCase");
-var CreateUserUseCase_1 = require("../CreateUserUseCase");
-var usersRepositoryInMemory;
-var createUserUseCase;
+var usersRepository;
 var authenticateUserUseCase;
-var coursesRepositoryInMemory;
+var coursesRepository;
 var jwtProvider;
-describe("Auth User", function () {
-    beforeEach(function () {
-        usersRepositoryInMemory = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
-        coursesRepositoryInMemory = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
-        createUserUseCase = new CreateUserUseCase_1.CreateUserUseCase(usersRepositoryInMemory);
-        jwtProvider = new JwtProviderImpl_1.JwtProviderImpl();
-        authenticateUserUseCase = new AuthenticateUserUseCase_1.AuthenticateUserUseCase(usersRepositoryInMemory, coursesRepositoryInMemory, jwtProvider);
+var passwordHash;
+beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                usersRepository = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
+                coursesRepository = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
+                jwtProvider = new JwtProviderImpl_1.JwtProviderImpl();
+                authenticateUserUseCase = new AuthenticateUserUseCase_1.AuthenticateUserUseCase(usersRepository, coursesRepository, jwtProvider);
+                return [4 /*yield*/, (0, bcryptjs_1.hash)("123456", 8)];
+            case 1:
+                passwordHash = _a.sent();
+                return [2 /*return*/];
+        }
     });
-    it("should be able to authenticate user", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, auth, user;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, createUserUseCase.execute({
-                        name: "Iago Alexandre",
-                        email: "iagoaap@gmail.com",
-                        password: "123456",
-                    })];
-                case 1:
-                    _b.sent();
-                    return [4 /*yield*/, authenticateUserUseCase.execute({
-                            email: "iagoaap@gmail.com",
-                            password: "123456",
-                        })];
-                case 2:
-                    _a = _b.sent(), auth = _a.auth, user = _a.user;
-                    expect(auth).toHaveProperty("token");
-                    expect(user).toHaveProperty("id");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
+}); });
+describe("Auth User", function () {
     it("should not be able to authenticate user with incorrect email", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, createUserUseCase.execute({
-                        name: "Iago Alexandre",
-                        email: "iagoaap@gmail.com",
-                        password: "123456",
-                    })];
-                case 1:
-                    _a.sent();
+                case 0:
+                    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce(null);
                     return [4 /*yield*/, expect(authenticateUserUseCase.execute({
                             email: "incorrect@email.com",
                             password: "123456",
-                        })).rejects.toEqual(new DomainError_1.DomainError("User does not exists!"))];
-                case 2:
+                        })).rejects.toEqual(new DomainError_1.DomainError("USER_NOT_FOUND"))];
+                case 1:
                     _a.sent();
+                    expect(usersRepository.findByEmail).toHaveBeenCalledWith("incorrect@email.com");
                     return [2 /*return*/];
             }
         });
     }); });
     it("should not be able to authenticate user with incorrect password", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var user;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, createUserUseCase.execute({
-                        name: "Iago Alexandre",
-                        email: "iagoaap@gmail.com",
-                        password: "123456",
-                    })];
-                case 1:
-                    user = _a.sent();
+                case 0:
+                    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
+                        password: passwordHash,
+                    });
                     return [4 /*yield*/, expect(authenticateUserUseCase.execute({
-                            email: user.email,
+                            email: "iago@gmail.com",
                             password: "109238102938102",
-                        })).rejects.toEqual(new DomainError_1.DomainError("Incorrect password!"))];
-                case 2:
+                        })).rejects.toEqual(new DomainError_1.DomainError("USER_NOT_FOUND"))];
+                case 1:
                     _a.sent();
+                    expect(usersRepository.findByEmail).toHaveBeenCalledWith("iago@gmail.com");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("should be able to authenticate user", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
+                        id: "-1",
+                        password: passwordHash,
+                        email: "iagoaap@gmail.com",
+                    });
+                    return [4 /*yield*/, authenticateUserUseCase.execute({
+                            email: "iagoaap@gmail.com",
+                            password: "123456",
+                        })];
+                case 1:
+                    res = _a.sent();
+                    expect(res).toHaveProperty("auth");
+                    expect(res).toHaveProperty("user");
+                    expect(usersRepository.findByEmail).toHaveBeenCalledWith("iagoaap@gmail.com");
                     return [2 /*return*/];
             }
         });

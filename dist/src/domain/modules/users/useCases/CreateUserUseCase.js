@@ -66,7 +66,7 @@ var CreateUserUseCase = /** @class */ (function () {
                     case 1:
                         userAlreadyExists = _b.sent();
                         if (userAlreadyExists) {
-                            throw new DomainError_1.DomainError("Email already exists!", 400);
+                            throw new DomainError_1.DomainError("USER_ALREADY_EXISTS", 400);
                         }
                         return [4 /*yield*/, (0, bcryptjs_1.hash)(password, 8)];
                     case 2:
