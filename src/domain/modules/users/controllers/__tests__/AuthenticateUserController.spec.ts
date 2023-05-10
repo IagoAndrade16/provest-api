@@ -1,15 +1,16 @@
 import { app } from "@infra/app";
+import { AppDataSource } from "@infra/database";
 import { hash } from "bcryptjs";
 import request from "supertest";
-import { Connection, createConnection } from "typeorm";
+import { DataSource } from "typeorm";
 import { v4 as uuidV4 } from "uuid";
 
-let connection: Connection;
+let connection: DataSource;
 
 const route = "/users/session";
 
 beforeAll(async () => {
-  connection = await createConnection();
+  connection = await AppDataSource.initialize();
   await connection.runMigrations();
 
   const id = uuidV4();
@@ -24,7 +25,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await connection.dropDatabase();
-  await connection.close();
+  await connection.destroy();
 });
 
 describe("Schema validation", () => {

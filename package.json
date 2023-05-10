@@ -1,11 +1,11 @@
 {
-  "name": "Fit-API",
+  "name": "provest-api",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register --transpile-only --ignore-watch node_modules --respawn src/infra/server.ts",
-    "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
+    "typeorm": "typeorm-ts-node-esm",
     "test": "jest --runInBand --detectOpenHandles"
   },
   "devDependencies": {
@@ -45,7 +45,7 @@
     "ts-node": "^10.9.1",
     "ts-node-dev": "2.0.0-0",
     "tsyringe": "^4.7.0",
-    "typeorm": "0.2.45",
+    "typeorm": "^0.3.16",
     "uuid": "^9.0.0",
     "yup": "^1.1.1"
   }

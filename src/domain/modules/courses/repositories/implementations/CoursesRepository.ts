@@ -1,5 +1,6 @@
+import { AppDataSource } from "@infra/database";
 import { IUpdateCourseDTO } from "@modules/courses/dtos/IUpdateCourseDTO";
-import { getRepository, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { ICreateCourseDTO } from "../../dtos/ICreateCourseDTO";
 import { Course } from "../../entities/Course";
@@ -8,7 +9,7 @@ import { ICoursesRepository } from "../ICoursesRepository";
 export class CoursesRepository implements ICoursesRepository {
   private repository: Repository<Course>;
   constructor() {
-    this.repository = getRepository(Course);
+    this.repository = AppDataSource.getRepository(Course);
   }
 
   async create(data: ICreateCourseDTO): Promise<Course> {

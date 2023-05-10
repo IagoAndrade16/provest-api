@@ -48,11 +48,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersRepository = void 0;
-var typeorm_1 = require("typeorm");
+var database_1 = require("@infra/database");
 var User_1 = require("../../entities/User");
 var UsersRepository = /** @class */ (function () {
     function UsersRepository() {
-        this.repository = (0, typeorm_1.getRepository)(User_1.User);
+        this.repository = database_1.AppDataSource.getRepository(User_1.User);
     }
     UsersRepository.prototype.create = function (data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -75,7 +75,9 @@ var UsersRepository = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.repository.findOne({
-                            email: email,
+                            where: {
+                                email: email,
+                            },
                         })];
                     case 1:
                         user = _a.sent();
@@ -89,7 +91,11 @@ var UsersRepository = /** @class */ (function () {
             var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.findOne({ id: id })];
+                    case 0: return [4 /*yield*/, this.repository.findOne({
+                            where: {
+                                id: id,
+                            },
+                        })];
                     case 1:
                         user = _a.sent();
                         return [2 /*return*/, user];
