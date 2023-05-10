@@ -9,11 +9,8 @@ import "./container";
 
 import swaggerFile from "../../swagger.json";
 import { router } from "../domain/routes/index";
-import createConnection from "./database";
 
 dotenv.config();
-
-createConnection();
 
 const app = express();
 app.use(express.json());

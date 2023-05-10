@@ -1,18 +1,18 @@
-import * as dotenv from "dotenv";
-import { Connection, createConnection, getConnectionOptions } from "typeorm";
+import { config } from "dotenv";
+import { DataSource } from "typeorm";
 
-dotenv.config();
+config();
 
-export default async (): Promise<Connection> => {
-  const defaultOptions = await getConnectionOptions();
+export const AppDataSource = new DataSource({
+  type: "postgres",
+  port: 5432,
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DATABASE,
+  entities: ["./src/domain/modules/**/entities/*.ts"],
+  migrations: ["./src/infra/database/migrations/*.ts"],
+  migrationsTableName: "migrations",
+});
 
-  return createConnection(
-    Object.assign(defaultOptions, {
-      host: "localhost",
-      database:
-        process.env.NODE_ENV === "test"
-          ? "provest_test"
-          : defaultOptions.database,
-    })
-  );
-};
+AppDataSource.initialize();
