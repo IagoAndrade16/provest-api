@@ -37,11 +37,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CoursesRepository = void 0;
-var typeorm_1 = require("typeorm");
+var database_1 = require("@infra/database");
 var Course_1 = require("../../entities/Course");
 var CoursesRepository = /** @class */ (function () {
     function CoursesRepository() {
-        this.repository = (0, typeorm_1.getRepository)(Course_1.Course);
+        this.repository = database_1.AppDataSource.getRepository(Course_1.Course);
     }
     CoursesRepository.prototype.create = function (data) {
         return __awaiter(this, void 0, void 0, function () {

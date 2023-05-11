@@ -40,9 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_1 = require("@infra/app");
+var database_1 = require("@infra/database");
 var bcryptjs_1 = require("bcryptjs");
 var supertest_1 = __importDefault(require("supertest"));
-var typeorm_1 = require("typeorm");
 var uuid_1 = require("uuid");
 var connection;
 var route = "/users/session";
@@ -50,7 +50,7 @@ beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     var id, password;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, typeorm_1.createConnection)()];
+            case 0: return [4 /*yield*/, database_1.AppDataSource.initialize()];
             case 1:
                 connection = _a.sent();
                 return [4 /*yield*/, connection.runMigrations()];
@@ -73,7 +73,7 @@ afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
             case 0: return [4 /*yield*/, connection.dropDatabase()];
             case 1:
                 _a.sent();
-                return [4 /*yield*/, connection.close()];
+                return [4 /*yield*/, connection.destroy()];
             case 2:
                 _a.sent();
                 return [2 /*return*/];

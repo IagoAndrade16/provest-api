@@ -1,20 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppDataSource = void 0;
+var dotenv_1 = require("dotenv");
 var typeorm_1 = require("typeorm");
+(0, dotenv_1.config)();
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "postgres",
-    host: "localhost",
     port: 5432,
-    username: "pedro",
-    password: "senhasupersecreta",
-    database: "provest",
+    host: process.env.DB_HOST,
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DATABASE,
     entities: ["./src/domain/modules/**/entities/*.ts"],
+    migrations: ["./src/infra/database/migrations/*.ts"],
+    migrationsTableName: "migrations",
 });
-exports.AppDataSource.initialize()
-    .then(function () {
-    console.log("Data Source has been initialized!");
-})
-    .catch(function (err) {
-    console.error("Error during Data Source initialization", err);
-});
+exports.AppDataSource.initialize();
