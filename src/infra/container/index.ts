@@ -1,5 +1,7 @@
 import { JwtProviderImpl } from "@infra/providers/implementations/JwtProviderImpl";
-import { IJwtProvider, JwtProviderAlias } from "@infra/providers/JwtProvider";
+import { MailProviderImpl } from "@infra/providers/implementations/MailProviderImpl";
+import { JwtProvider, JwtProviderAlias } from "@infra/providers/JwtProvider";
+import { MailProvider, mailProviderAlias } from "@infra/providers/MailProvider";
 import {
   coursesRepositoryAlias,
   ICoursesRepository,
@@ -22,4 +24,5 @@ container.registerSingleton<ICoursesRepository>(
   CoursesRepository
 );
 
-container.registerSingleton<IJwtProvider>(JwtProviderAlias, JwtProviderImpl);
+container.registerSingleton<JwtProvider>(JwtProviderAlias, JwtProviderImpl);
+container.registerSingleton<MailProvider>(mailProviderAlias, MailProviderImpl);

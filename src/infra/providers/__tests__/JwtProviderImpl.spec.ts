@@ -1,8 +1,8 @@
 import { TestUtils } from "../../../domain/utils/TestUtils";
 import { JwtProviderImpl } from "../implementations/JwtProviderImpl";
-import { IJwtProvider } from "../JwtProvider";
+import { JwtProvider } from "../JwtProvider";
 
-let jwtProvider: IJwtProvider;
+let jwtProvider: JwtProvider;
 let authToken: string;
 
 beforeAll(async () => {
@@ -16,8 +16,6 @@ describe("verify", () => {
 
     expect(sub).toBe(null);
   });
-
-  // TODO: Teste para verificar um token invalido
 
   it("should be return sub", () => {
     const sub = jwtProvider.verify(authToken.split("Bearer ")[1]);

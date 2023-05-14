@@ -8,7 +8,7 @@ import swaggerUi from "swagger-ui-express";
 import "./container";
 
 import swaggerFile from "../../swagger.json";
-import { router } from "../domain/routes/index";
+import { router } from "../domain/routes/routes";
 
 dotenv.config();
 

@@ -1,5 +1,5 @@
 import { DomainError } from "@errors/DomainError";
-import { IJwtProvider, JwtProviderAlias } from "@infra/providers/JwtProvider";
+import { JwtProvider, JwtProviderAlias } from "@infra/providers/JwtProvider";
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
 import { User } from "@modules/users/entities/User";
 import { compare } from "bcryptjs";
@@ -28,7 +28,7 @@ class AuthenticateUserUseCase {
     @inject("CoursesRepository")
     private coursesRepository: ICoursesRepository,
     @inject(JwtProviderAlias)
-    private jwtProvider: IJwtProvider
+    private jwtProvider: JwtProvider
   ) {}
 
   async execute({
