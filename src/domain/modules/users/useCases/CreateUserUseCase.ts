@@ -25,6 +25,12 @@ class CreateUserUseCase {
       throw new DomainError("USER_ALREADY_EXISTS", 400);
     }
 
+    const passwordSecurity = User.getSecurityPasswordStatus(password, name);
+
+    if (passwordSecurity !== "SECURE") {
+      throw new DomainError(`PASSWORD_${passwordSecurity}`, 400);
+    }
+
     const passwordHash = await hash(password, 8);
 
     const user = await this.usersRepository.create({

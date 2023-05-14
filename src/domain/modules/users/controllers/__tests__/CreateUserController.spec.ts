@@ -1,20 +1,12 @@
 import { app } from "@infra/app";
 import { AppDataSource } from "@infra/database";
 import request from "supertest";
-import { DataSource } from "typeorm";
-
-let connection: DataSource;
 
 const route = "/users";
 
 beforeAll(async () => {
-  connection = await AppDataSource.initialize();
-  await connection.runMigrations();
-});
-
-afterAll(async () => {
-  await connection.dropDatabase();
-  await connection.destroy();
+  await AppDataSource.initialize();
+  await AppDataSource.runMigrations();
 });
 
 describe("Schema validation", () => {
@@ -32,7 +24,7 @@ describe("Schema validation", () => {
       const response = await request(app).post(route).send({
         name: "name",
         email: "invalid email",
-        password: "123456",
+        password: "30260389",
       });
 
       expect(response.status).toBe(400);
@@ -45,7 +37,7 @@ describe("Schema validation", () => {
         .send({
           name: "name",
           email: `iago${"a".repeat(255)}16@gmail.com`,
-          password: "123456",
+          password: "30260389",
         });
 
       expect(response.status).toBe(400);
@@ -60,7 +52,7 @@ describe("Schema validation", () => {
         .send({
           name: "n".repeat(256),
           email: "iagoaap16@gmail.com",
-          password: "123456",
+          password: "30260389",
         });
 
       expect(response.status).toBe(400);
@@ -69,13 +61,26 @@ describe("Schema validation", () => {
   });
 
   describe("Password", () => {
-    it("should throw error if password length > 20", async () => {
+    it("should throw error if password length > 16", async () => {
       const response = await request(app)
         .post(route)
         .send({
           name: "name",
           email: "iagoaap16@gmail.com",
-          password: "1".repeat(21),
+          password: "1".repeat(17),
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty("password");
+    });
+
+    it("should throw error if password length < 8", async () => {
+      const response = await request(app)
+        .post(route)
+        .send({
+          name: "name",
+          email: "iagoaap16@gmail.com",
+          password: "1".repeat(17),
         });
 
       expect(response.status).toBe(400);
@@ -89,10 +94,14 @@ describe("Return values", () => {
     const response = await request(app).post(route).send({
       name: "Iago Alexandre",
       email: "iagoaap@gmail.com",
-      password: "123456",
+      password: "30260389",
     });
-
+    console.log(response.body);
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id");
   });
+});
+
+afterAll(async () => {
+  await AppDataSource.destroy();
 });
