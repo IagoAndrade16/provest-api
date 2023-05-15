@@ -2,14 +2,14 @@ import { DomainError } from "@errors/DomainError";
 import { MailProvider, mailProviderAlias } from "@infra/providers/MailProvider";
 import { ValidationsUtils } from "@infra/validation/ValidationUtils";
 import { resolve } from "path";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
 import {
   IUsersRepository,
   usersRepositoryAlias,
 } from "../repositories/IUsersRepository";
 
-@injectable()
+@singleton()
 export class ForgotPasswordUseCase {
   constructor(
     @inject(usersRepositoryAlias)

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.find = void 0;
 var JwtProviderImpl_1 = require("@infra/providers/implementations/JwtProviderImpl");
 var MailProviderImpl_1 = require("@infra/providers/implementations/MailProviderImpl");
 var JwtProvider_1 = require("@infra/providers/JwtProvider");
@@ -13,3 +14,7 @@ tsyringe_1.container.registerSingleton(IUsersRepository_1.usersRepositoryAlias, 
 tsyringe_1.container.registerSingleton(ICoursesRepository_1.coursesRepositoryAlias, CoursesRepository_1.CoursesRepository);
 tsyringe_1.container.registerSingleton(JwtProvider_1.JwtProviderAlias, JwtProviderImpl_1.JwtProviderImpl);
 tsyringe_1.container.registerSingleton(MailProvider_1.mailProviderAlias, MailProviderImpl_1.MailProviderImpl);
+function find(token) {
+    return tsyringe_1.container.resolve(token);
+}
+exports.find = find;

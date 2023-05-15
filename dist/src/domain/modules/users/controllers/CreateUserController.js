@@ -65,7 +65,7 @@ var yup = __importStar(require("yup"));
 var CreateUserUseCase_1 = require("../useCases/CreateUserUseCase");
 var bodySchema = yup.object().shape({
     name: yup.string().required().max(255),
-    password: yup.string().required().max(20),
+    password: yup.string().required().min(8).max(16),
     email: yup.string().required().email().max(255),
 });
 var CreateUserController = /** @class */ (function () {

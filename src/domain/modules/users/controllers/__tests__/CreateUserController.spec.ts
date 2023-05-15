@@ -80,7 +80,7 @@ describe("Schema validation", () => {
         .send({
           name: "name",
           email: "iagoaap16@gmail.com",
-          password: "1".repeat(17),
+          password: "1".repeat(7),
         });
 
       expect(response.status).toBe(400);
@@ -96,7 +96,6 @@ describe("Return values", () => {
       email: "iagoaap@gmail.com",
       password: "30260389",
     });
-    console.log(response.body);
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("id");
   });
