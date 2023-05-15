@@ -184,7 +184,6 @@ describe("Return values", function () {
                     })];
                 case 1:
                     response = _a.sent();
-                    console.log(response.body);
                     expect(response.status).toBe(201);
                     expect(response.body).toHaveProperty("id");
                     return [2 /*return*/];
