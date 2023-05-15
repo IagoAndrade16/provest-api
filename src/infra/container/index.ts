@@ -12,7 +12,7 @@ import {
   IUsersRepository,
   usersRepositoryAlias,
 } from "@modules/users/repositories/IUsersRepository";
-import { container } from "tsyringe";
+import { container, InjectionToken } from "tsyringe";
 
 container.registerSingleton<IUsersRepository>(
   usersRepositoryAlias,
@@ -26,3 +26,7 @@ container.registerSingleton<ICoursesRepository>(
 
 container.registerSingleton<JwtProvider>(JwtProviderAlias, JwtProviderImpl);
 container.registerSingleton<MailProvider>(mailProviderAlias, MailProviderImpl);
+
+export function find<T>(token: InjectionToken<T>): T {
+  return container.resolve(token);
+}

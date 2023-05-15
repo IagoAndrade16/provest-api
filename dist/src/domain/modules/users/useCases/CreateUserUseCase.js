@@ -52,6 +52,7 @@ exports.CreateUserUseCase = void 0;
 var DomainError_1 = require("@errors/DomainError");
 var bcryptjs_1 = require("bcryptjs");
 var tsyringe_1 = require("tsyringe");
+var User_1 = require("../entities/User");
 var CreateUserUseCase = /** @class */ (function () {
     function CreateUserUseCase(usersRepository) {
         this.usersRepository = usersRepository;
@@ -59,7 +60,7 @@ var CreateUserUseCase = /** @class */ (function () {
     CreateUserUseCase.prototype.execute = function (_a) {
         var name = _a.name, password = _a.password, email = _a.email;
         return __awaiter(this, void 0, void 0, function () {
-            var userAlreadyExists, passwordHash, user;
+            var userAlreadyExists, passwordSecurity, passwordHash, user;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.usersRepository.findByEmail(email)];
@@ -67,6 +68,10 @@ var CreateUserUseCase = /** @class */ (function () {
                         userAlreadyExists = _b.sent();
                         if (userAlreadyExists) {
                             throw new DomainError_1.DomainError("USER_ALREADY_EXISTS", 400);
+                        }
+                        passwordSecurity = User_1.User.getSecurityPasswordStatus(password, name);
+                        if (passwordSecurity !== "SECURE") {
+                            throw new DomainError_1.DomainError("PASSWORD_".concat(passwordSecurity), 400);
                         }
                         return [4 /*yield*/, (0, bcryptjs_1.hash)(password, 8)];
                     case 2:
