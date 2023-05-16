@@ -14,7 +14,6 @@ beforeAll(async () => {
   await AppDataSource.initialize();
   await AppDataSource.runMigrations();
   authToken = await TestUtils.generateBearerToken(uuid());
-  jest.useFakeTimers();
 });
 
 describe("Schema validation", () => {

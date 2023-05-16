@@ -9,6 +9,7 @@ import "./container";
 
 import swaggerFile from "../../swagger.json";
 import { router } from "../domain/routes/routes";
+import { AppDataSource } from "./database";
 
 dotenv.config();
 

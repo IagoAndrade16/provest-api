@@ -1,16 +1,23 @@
 import { DomainError } from "@errors/DomainError";
-import { find } from "@infra/container";
+import { MailProviderImpl } from "@infra/providers/implementations/MailProviderImpl";
+import { MailProvider } from "@infra/providers/MailProvider";
 import { User } from "@modules/users/entities/User";
-import {
-  IUsersRepository,
-  usersRepositoryAlias,
-} from "@modules/users/repositories/IUsersRepository";
+import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
+import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
 import { v4 as uuid } from "uuid";
 
 import { ForgotPasswordUseCase } from "../ForgotPasswordUseCase";
 
-const usecase = find(ForgotPasswordUseCase);
-const usersRepository = find<IUsersRepository>(usersRepositoryAlias);
+let usecase: ForgotPasswordUseCase;
+let usersRepository: IUsersRepository;
+
+let mailProvider: MailProvider;
+
+beforeAll(() => {
+  usersRepository = new UsersRepositoryInMemory();
+  mailProvider = new MailProviderImpl();
+  usecase = new ForgotPasswordUseCase(usersRepository, mailProvider);
+});
 
 const userId = uuid();
 

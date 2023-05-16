@@ -9,7 +9,6 @@ export class ValidationsUtils {
   }
 
   static validateEmail(email: string): boolean {
-    // Expressão regular para validar o formato do e-mail
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     return regex.test(email);
