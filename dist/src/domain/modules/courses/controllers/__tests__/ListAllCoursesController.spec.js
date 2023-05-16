@@ -42,15 +42,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var app_1 = require("@infra/app");
 var database_1 = require("@infra/database");
 var supertest_1 = __importDefault(require("supertest"));
-var connection;
 describe("Create user controller", function () {
     beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, database_1.AppDataSource.initialize()];
                 case 1:
-                    connection = _a.sent();
-                    return [4 /*yield*/, connection.runMigrations()];
+                    _a.sent();
+                    return [4 /*yield*/, database_1.AppDataSource.runMigrations()];
                 case 2:
                     _a.sent();
                     return [2 /*return*/];
@@ -60,11 +59,8 @@ describe("Create user controller", function () {
     afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, connection.dropDatabase()];
+                case 0: return [4 /*yield*/, database_1.AppDataSource.destroy()];
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, connection.destroy()];
-                case 2:
                     _a.sent();
                     return [2 /*return*/];
             }

@@ -1,19 +1,15 @@
 import { app } from "@infra/app";
 import { AppDataSource } from "@infra/database";
 import request from "supertest";
-import { DataSource } from "typeorm";
-
-let connection: DataSource;
 
 describe("Create user controller", () => {
   beforeAll(async () => {
-    connection = await AppDataSource.initialize();
-    await connection.runMigrations();
+    await AppDataSource.initialize();
+    await AppDataSource.runMigrations();
   });
 
   afterAll(async () => {
-    await connection.dropDatabase();
-    await connection.destroy();
+    await AppDataSource.destroy();
   });
 
   it("should be able to list all courses", async () => {

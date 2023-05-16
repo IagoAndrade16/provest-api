@@ -14,5 +14,3 @@ export const AppDataSource = new DataSource({
   migrations: ["./src/infra/database/migrations/*.ts"],
   migrationsTableName: "migrations",
 });
-
-AppDataSource.initialize();

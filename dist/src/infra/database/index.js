@@ -15,4 +15,3 @@ exports.AppDataSource = new typeorm_1.DataSource({
     migrations: ["./src/infra/database/migrations/*.ts"],
     migrationsTableName: "migrations",
 });
-exports.AppDataSource.initialize();

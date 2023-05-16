@@ -44,7 +44,6 @@ var database_1 = require("@infra/database");
 var supertest_1 = __importDefault(require("supertest"));
 var uuid_1 = require("uuid");
 var TestUtils_1 = require("../../../../utils/TestUtils");
-var connection;
 var userId = (0, uuid_1.v4)();
 var authToken;
 beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -52,8 +51,8 @@ beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
         switch (_a.label) {
             case 0: return [4 /*yield*/, database_1.AppDataSource.initialize()];
             case 1:
-                connection = _a.sent();
-                return [4 /*yield*/, connection.runMigrations()];
+                _a.sent();
+                return [4 /*yield*/, database_1.AppDataSource.runMigrations()];
             case 2:
                 _a.sent();
                 return [4 /*yield*/, TestUtils_1.TestUtils.generateBearerToken(userId)];
@@ -66,11 +65,8 @@ beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
 afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, connection.dropDatabase()];
+            case 0: return [4 /*yield*/, database_1.AppDataSource.destroy()];
             case 1:
-                _a.sent();
-                return [4 /*yield*/, connection.destroy()];
-            case 2:
                 _a.sent();
                 return [2 /*return*/];
         }
