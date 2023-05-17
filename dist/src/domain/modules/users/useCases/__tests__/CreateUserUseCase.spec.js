@@ -41,48 +41,90 @@ var UsersRepositoryIMemory_1 = require("@modules/users/repositories/in-memory/Us
 var CreateUserUseCase_1 = require("../CreateUserUseCase");
 var usecase;
 var usersRepository;
-var mockedUser = {
-    name: "Iago",
-    email: "user@example.com",
-    password: "123456",
-};
 beforeAll(function () {
     usersRepository = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
     usecase = new CreateUserUseCase_1.CreateUserUseCase(usersRepository);
 });
-describe("Create user", function () {
-    it("should not be able to create a new user with same email", function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
-                        email: "user@example.com",
-                    });
-                    return [4 /*yield*/, expect(usecase.execute(mockedUser)).rejects.toEqual(new DomainError_1.DomainError("USER_ALREADY_EXISTS"))];
-                case 1:
-                    _a.sent();
-                    expect(usersRepository.findByEmail).toBeCalledWith(mockedUser.email);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("should be able to create a new user", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var res;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce(null);
-                    jest
-                        .spyOn(usersRepository, "create")
-                        .mockResolvedValueOnce(mockedUser);
-                    return [4 /*yield*/, usecase.execute(mockedUser)];
-                case 1:
-                    res = _a.sent();
-                    expect(res).toHaveProperty("email");
-                    expect(usersRepository.findByEmail).toBeCalledWith(mockedUser.email);
-                    expect(usersRepository.create).toBeCalledTimes(1);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-});
+it("should return USER_ALREADY_EXISTS if email already exists", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var mockedUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                mockedUser = {
+                    name: "Iago",
+                    email: "user@example.com",
+                    password: "30260389",
+                };
+                jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
+                    email: "user@example.com",
+                });
+                return [4 /*yield*/, expect(usecase.execute(mockedUser)).rejects.toEqual(new DomainError_1.DomainError("USER_ALREADY_EXISTS"))];
+            case 1:
+                _a.sent();
+                expect(usersRepository.findByEmail).toBeCalledWith(mockedUser.email);
+                return [2 /*return*/];
+        }
+    });
+}); });
+it("should return PASSWORD_BASIC_SEQUENCE if password has basic sequence", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var mockedUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                mockedUser = {
+                    name: "Iago",
+                    email: "user@example.com",
+                    password: "123456789",
+                };
+                jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce(null);
+                return [4 /*yield*/, expect(usecase.execute(mockedUser)).rejects.toEqual(new DomainError_1.DomainError("PASSWORD_BASIC_SEQUENCE"))];
+            case 1:
+                _a.sent();
+                expect(usersRepository.findByEmail).toBeCalledTimes(1);
+                return [2 /*return*/];
+        }
+    });
+}); });
+it("should return PASSWORD_INCLUDES_NAME if password includes name", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var mockedUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                mockedUser = {
+                    name: "Iago Alexandre",
+                    email: "user@example.com",
+                    password: "3026iago",
+                };
+                jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce(null);
+                return [4 /*yield*/, expect(usecase.execute(mockedUser)).rejects.toEqual(new DomainError_1.DomainError("PASSWORD_INCLUDES_NAME"))];
+            case 1:
+                _a.sent();
+                expect(usersRepository.findByEmail).toBeCalledTimes(1);
+                return [2 /*return*/];
+        }
+    });
+}); });
+it("should be able to create a new user", function () { return __awaiter(void 0, void 0, void 0, function () {
+    var mockedUser, res;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                mockedUser = {
+                    name: "Iago",
+                    email: "user@example.com",
+                    password: "30260389",
+                };
+                jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce(null);
+                jest
+                    .spyOn(usersRepository, "create")
+                    .mockResolvedValueOnce(mockedUser);
+                return [4 /*yield*/, usecase.execute(mockedUser)];
+            case 1:
+                res = _a.sent();
+                expect(res).toHaveProperty("email");
+                expect(usersRepository.findByEmail).toBeCalledWith(mockedUser.email);
+                expect(usersRepository.create).toBeCalledTimes(1);
+                return [2 /*return*/];
+        }
+    });
+}); });

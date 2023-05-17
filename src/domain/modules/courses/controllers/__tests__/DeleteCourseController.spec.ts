@@ -1,26 +1,22 @@
 import { app } from "@infra/app";
 import { AppDataSource } from "@infra/database";
 import request from "supertest";
-import { DataSource } from "typeorm";
 import { v4 as uuidV4 } from "uuid";
 
 import { TestUtils } from "../../../../utils/TestUtils";
-
-let connection: DataSource;
 
 const userId = uuidV4();
 let authToken: string;
 
 beforeAll(async () => {
-  connection = await AppDataSource.initialize();
-  await connection.runMigrations();
+  await AppDataSource.initialize();
+  await AppDataSource.runMigrations();
 
   authToken = await TestUtils.generateBearerToken(userId);
 });
 
 afterAll(async () => {
-  await connection.dropDatabase();
-  await connection.destroy();
+  await AppDataSource.destroy();
 });
 
 describe("Schema validation", () => {

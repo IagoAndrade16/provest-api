@@ -1,13 +1,13 @@
 import { DomainError } from "@errors/DomainError";
 import { sign, verify } from "jsonwebtoken";
 
-import { IJwtProvider } from "../JwtProvider";
+import { JwtProvider } from "../JwtProvider";
 
 interface IPayload {
   sub: string;
 }
 
-export class JwtProviderImpl implements IJwtProvider {
+export class JwtProviderImpl implements JwtProvider {
   generate(userId: string): string {
     if (!userId) return null;
 

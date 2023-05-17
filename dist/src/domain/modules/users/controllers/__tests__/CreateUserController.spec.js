@@ -42,28 +42,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var app_1 = require("@infra/app");
 var database_1 = require("@infra/database");
 var supertest_1 = __importDefault(require("supertest"));
-var connection;
 var route = "/users";
 beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, database_1.AppDataSource.initialize()];
             case 1:
-                connection = _a.sent();
-                return [4 /*yield*/, connection.runMigrations()];
-            case 2:
                 _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, connection.dropDatabase()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, connection.destroy()];
+                return [4 /*yield*/, database_1.AppDataSource.runMigrations()];
             case 2:
                 _a.sent();
                 return [2 /*return*/];
@@ -94,7 +80,7 @@ describe("Schema validation", function () {
                     case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(route).send({
                             name: "name",
                             email: "invalid email",
-                            password: "123456",
+                            password: "30260389",
                         })];
                     case 1:
                         response = _a.sent();
@@ -113,7 +99,7 @@ describe("Schema validation", function () {
                             .send({
                             name: "name",
                             email: "iago".concat("a".repeat(255), "16@gmail.com"),
-                            password: "123456",
+                            password: "30260389",
                         })];
                     case 1:
                         response = _a.sent();
@@ -134,7 +120,7 @@ describe("Schema validation", function () {
                             .send({
                             name: "n".repeat(256),
                             email: "iagoaap16@gmail.com",
-                            password: "123456",
+                            password: "30260389",
                         })];
                     case 1:
                         response = _a.sent();
@@ -146,7 +132,7 @@ describe("Schema validation", function () {
         }); });
     });
     describe("Password", function () {
-        it("should throw error if password length > 20", function () { return __awaiter(void 0, void 0, void 0, function () {
+        it("should throw error if password length > 16", function () { return __awaiter(void 0, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -155,7 +141,26 @@ describe("Schema validation", function () {
                             .send({
                             name: "name",
                             email: "iagoaap16@gmail.com",
-                            password: "1".repeat(21),
+                            password: "1".repeat(17),
+                        })];
+                    case 1:
+                        response = _a.sent();
+                        expect(response.status).toBe(400);
+                        expect(response.body).toHaveProperty("password");
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it("should throw error if password length < 8", function () { return __awaiter(void 0, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                            .post(route)
+                            .send({
+                            name: "name",
+                            email: "iagoaap16@gmail.com",
+                            password: "1".repeat(7),
                         })];
                     case 1:
                         response = _a.sent();
@@ -175,7 +180,7 @@ describe("Return values", function () {
                 case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(route).send({
                         name: "Iago Alexandre",
                         email: "iagoaap@gmail.com",
-                        password: "123456",
+                        password: "30260389",
                     })];
                 case 1:
                     response = _a.sent();
@@ -186,3 +191,13 @@ describe("Return values", function () {
         });
     }); });
 });
+afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, database_1.AppDataSource.destroy()];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });

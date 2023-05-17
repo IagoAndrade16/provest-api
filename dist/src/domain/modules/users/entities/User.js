@@ -19,6 +19,56 @@ var User = /** @class */ (function () {
             this.id = (0, uuid_1.v4)();
         }
     }
+    User.isBasicSequencePassword = function (password) {
+        var basicSequence = "123456789";
+        var inverseBasicSequence = "987654321";
+        if (basicSequence.includes(password) ||
+            inverseBasicSequence.includes(password)) {
+            return true;
+        }
+        var sequences = [
+            "123",
+            "234",
+            "345",
+            "456",
+            "567",
+            "678",
+            "789",
+            "876",
+            "765",
+            "654",
+            "543",
+            "432",
+            "321",
+        ];
+        var contadorSequencias = 0;
+        for (var i = 0; i < sequences.length; i += 1) {
+            if (password.includes(sequences[i])) {
+                contadorSequencias += 1;
+            }
+        }
+        if (contadorSequencias >= 1)
+            return true;
+        return false;
+    };
+    User.passwordIncludesName = function (password, name) {
+        var splitedName = name.split(" ");
+        var includeName = false;
+        splitedName.forEach(function (name) {
+            if (password.toLowerCase().includes(name.toLowerCase())) {
+                includeName = true;
+            }
+        });
+        return includeName;
+    };
+    User.getSecurityPasswordStatus = function (password, name) {
+        if (this.passwordIncludesName(password, name))
+            return "INCLUDES_NAME";
+        if (this.isBasicSequencePassword(password)) {
+            return "BASIC_SEQUENCE";
+        }
+        return "SECURE";
+    };
     __decorate([
         (0, typeorm_1.PrimaryColumn)(),
         __metadata("design:type", String)
