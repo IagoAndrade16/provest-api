@@ -3,4 +3,4 @@ import { AppDataSource } from "./database";
 
 AppDataSource.initialize();
 
-app.listen(process.env.PORT, () => console.log("Running in port 3333"));
+app.listen(process.env.PORT || 3000, () => console.log("Running in port 3333"));
