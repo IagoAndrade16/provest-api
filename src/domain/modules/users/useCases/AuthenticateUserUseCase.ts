@@ -4,6 +4,7 @@ import { ICoursesRepository } from "@modules/courses/repositories/ICoursesReposi
 import { User } from "@modules/users/entities/User";
 import { compare } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
+import { date } from "yup";
 
 import { IUsersRepository } from "../repositories/IUsersRepository";
 
@@ -41,6 +42,14 @@ class AuthenticateUserUseCase {
       throw new DomainError("USER_NOT_FOUND", 400);
     }
 
+    if (user.logged_token) {
+      const validToken = this.jwtProvider.verify(user.logged_token);
+
+      if (validToken) {
+        throw new DomainError("ALREADY_LOGGED");
+      }
+    }
+
     const passwordMatch = await compare(password, user.password);
 
     if (!passwordMatch) {
@@ -51,6 +60,8 @@ class AuthenticateUserUseCase {
     user.courses = user_courses;
 
     const token = this.jwtProvider.generate(user.id);
+
+    await this.usersRepository.update({ logged_token: token }, user.id);
 
     return {
       auth: {

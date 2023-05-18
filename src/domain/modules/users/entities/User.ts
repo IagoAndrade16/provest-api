@@ -39,6 +39,9 @@ class User {
   })
   courses: Course[];
 
+  @Column({ type: "varchar" })
+  logged_token: string | null;
+
   constructor() {
     if (!this.id) {
       this.id = uuidV4();

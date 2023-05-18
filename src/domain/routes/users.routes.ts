@@ -16,7 +16,7 @@ const resetPasswordController = new ResetPasswordController();
 const usersRoutes = Router();
 
 usersRoutes.post("/", createUserController.handle);
-usersRoutes.post("/session", authenticateUserController.handle);
+usersRoutes.post("/auth", authenticateUserController.handle);
 
 usersRoutes.patch("/", ensureAuthenticated, updateUserInfoController.handle);
 

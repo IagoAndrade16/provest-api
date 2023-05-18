@@ -71,6 +71,9 @@ var AuthenticateUserUseCase = /** @class */ (function () {
                         if (!user) {
                             throw new DomainError_1.DomainError("USER_NOT_FOUND", 400);
                         }
+                        if (user.logged_token) {
+                            throw new DomainError_1.DomainError("ALREADY_LOGGED");
+                        }
                         return [4 /*yield*/, (0, bcryptjs_1.compare)(password, user.password)];
                     case 2:
                         passwordMatch = _b.sent();
@@ -82,6 +85,9 @@ var AuthenticateUserUseCase = /** @class */ (function () {
                         user_courses = _b.sent();
                         user.courses = user_courses;
                         token = this.jwtProvider.generate(user.id);
+                        return [4 /*yield*/, this.usersRepository.update({ logged_token: token }, user.id)];
+                    case 4:
+                        _b.sent();
                         return [2 /*return*/, {
                                 auth: {
                                     token: token,
