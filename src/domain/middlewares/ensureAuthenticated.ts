@@ -19,7 +19,7 @@ export async function ensureAuthenticated(
   const [, token] = authHeader.split("Bearer ");
 
   try {
-    const userId = jwtProvider.verify(token);
+    const { sub: userId } = jwtProvider.verify(token);
 
     request.user = {
       id: userId,

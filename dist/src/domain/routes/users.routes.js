@@ -16,7 +16,7 @@ var resetPasswordController = new ResetPasswordController_1.ResetPasswordControl
 var usersRoutes = (0, express_1.Router)();
 exports.usersRoutes = usersRoutes;
 usersRoutes.post("/", createUserController.handle);
-usersRoutes.post("/session", authenticateUserController.handle);
+usersRoutes.post("/auth", authenticateUserController.handle);
 usersRoutes.patch("/", ensureAuthenticated_1.ensureAuthenticated, updateUserInfoController.handle);
 usersRoutes.get("/forgot-password", ensureAuthenticated_1.ensureAuthenticated, forgotPasswordController.handle);
 usersRoutes.patch("/reset-password", ensureAuthenticated_1.ensureAuthenticated, resetPasswordController.handle);

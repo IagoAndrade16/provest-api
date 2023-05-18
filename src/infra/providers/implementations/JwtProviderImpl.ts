@@ -1,10 +1,10 @@
-import { DomainError } from "@errors/DomainError";
 import { sign, verify } from "jsonwebtoken";
 
 import { JwtProvider } from "../JwtProvider";
 
-interface IPayload {
+export interface IPayload {
   sub: string;
+  exp: number;
 }
 
 export class JwtProviderImpl implements JwtProvider {
@@ -19,15 +19,11 @@ export class JwtProviderImpl implements JwtProvider {
     return token;
   }
 
-  verify(token: string): string {
-    if (!token) return null;
-
+  verify(token: string): IPayload {
     try {
-      const verifyJwt = verify(token, process.env.JWT_SECRET_KEY) as IPayload;
-
-      return verifyJwt.sub;
+      return verify(token, process.env.JWT_SECRET_KEY) as IPayload;
     } catch (err) {
-      throw new DomainError("INVALID_TOKEN", 400);
+      return null;
     }
   }
 }
