@@ -1,6 +1,7 @@
 import { AuthenticateUserController } from "@modules/users/controllers/AuthenticateUserController";
 import { CreateUserController } from "@modules/users/controllers/CreateUserController";
 import { ForgotPasswordController } from "@modules/users/controllers/ForgotPasswordController";
+import { LogoutUserController } from "@modules/users/controllers/LogoutUserController";
 import { ResetPasswordController } from "@modules/users/controllers/ResetPasswordController";
 import { UpdateUserInfoController } from "@modules/users/controllers/UpdateUserInfoController";
 import { Router } from "express";
@@ -12,6 +13,7 @@ const authenticateUserController = new AuthenticateUserController();
 const updateUserInfoController = new UpdateUserInfoController();
 const forgotPasswordController = new ForgotPasswordController();
 const resetPasswordController = new ResetPasswordController();
+const logoutUserController = new LogoutUserController();
 
 const usersRoutes = Router();
 
@@ -31,5 +33,7 @@ usersRoutes.patch(
   ensureAuthenticated,
   resetPasswordController.handle
 );
+
+usersRoutes.patch("/logout", ensureAuthenticated, logoutUserController.handle);
 
 export { usersRoutes };

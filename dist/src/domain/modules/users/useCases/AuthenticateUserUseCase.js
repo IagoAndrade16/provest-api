@@ -62,7 +62,7 @@ var AuthenticateUserUseCase = /** @class */ (function () {
     AuthenticateUserUseCase.prototype.execute = function (_a) {
         var email = _a.email, password = _a.password;
         return __awaiter(this, void 0, void 0, function () {
-            var user, passwordMatch, user_courses, token;
+            var user, validToken, passwordMatch, user_courses, token;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.usersRepository.findByEmail(email)];
@@ -72,7 +72,10 @@ var AuthenticateUserUseCase = /** @class */ (function () {
                             throw new DomainError_1.DomainError("USER_NOT_FOUND", 400);
                         }
                         if (user.logged_token) {
-                            throw new DomainError_1.DomainError("ALREADY_LOGGED");
+                            validToken = this.jwtProvider.verify(user.logged_token);
+                            if (validToken) {
+                                throw new DomainError_1.DomainError("ALREADY_LOGGED");
+                            }
                         }
                         return [4 /*yield*/, (0, bcryptjs_1.compare)(password, user.password)];
                     case 2:
