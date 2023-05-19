@@ -4,7 +4,6 @@ import { ICoursesRepository } from "@modules/courses/repositories/ICoursesReposi
 import { User } from "@modules/users/entities/User";
 import { compare } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
-import { date } from "yup";
 
 import { IUsersRepository } from "../repositories/IUsersRepository";
 

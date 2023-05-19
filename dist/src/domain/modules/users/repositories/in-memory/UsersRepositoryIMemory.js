@@ -55,6 +55,7 @@ var UsersRepositoryInMemory = /** @class */ (function () {
                     created_at: new Date(),
                     updated_at: new Date(),
                     courses: [],
+                    logged_token: null,
                 };
                 Object.assign(user, {
                     name: name,
@@ -64,6 +65,7 @@ var UsersRepositoryInMemory = /** @class */ (function () {
                     created_at: user.created_at,
                     updated_at: user.updated_at,
                     courses: [],
+                    logged_token: null,
                 });
                 this.users.push(user);
                 return [2 /*return*/, user];

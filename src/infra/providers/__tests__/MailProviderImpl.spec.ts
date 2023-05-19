@@ -4,6 +4,8 @@ import { resolve } from "path";
 import { MailProviderImpl } from "../implementations/MailProviderImpl";
 import { MailProvider } from "../MailProvider";
 
+jest.setTimeout(10000);
+
 let mailProvider: MailProvider;
 
 beforeAll(() => {

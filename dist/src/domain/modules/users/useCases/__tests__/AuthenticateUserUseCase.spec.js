@@ -41,15 +41,18 @@ var JwtProviderImpl_1 = require("@infra/providers/implementations/JwtProviderImp
 var CoursesRepositroyInMemory_1 = require("@modules/courses/repositories/in-memory/CoursesRepositroyInMemory");
 var UsersRepositoryIMemory_1 = require("@modules/users/repositories/in-memory/UsersRepositoryIMemory");
 var bcryptjs_1 = require("bcryptjs");
+var TestUtils_1 = require("../../../../utils/TestUtils");
 var AuthenticateUserUseCase_1 = require("../AuthenticateUserUseCase");
 var usersRepository;
 var authenticateUserUseCase;
 var coursesRepository;
 var jwtProvider;
 var passwordHash;
+var token;
 beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 usersRepository = new UsersRepositoryIMemory_1.UsersRepositoryInMemory();
                 coursesRepository = new CoursesRepositroyInMemory_1.CoursesRepositoryInMemory();
@@ -57,13 +60,16 @@ beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
                 authenticateUserUseCase = new AuthenticateUserUseCase_1.AuthenticateUserUseCase(usersRepository, coursesRepository, jwtProvider);
                 return [4 /*yield*/, (0, bcryptjs_1.hash)("123456", 8)];
             case 1:
-                passwordHash = _a.sent();
+                passwordHash = _b.sent();
+                return [4 /*yield*/, TestUtils_1.TestUtils.generateBearerToken("-1")];
+            case 2:
+                _a = (_b.sent()).split(" "), token = _a[1];
                 return [2 /*return*/];
         }
     });
 }); });
 describe("Auth User", function () {
-    it("should not be able to authenticate user with incorrect email", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it("should return USER_NOT_FOUND if incorrect email", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -79,7 +85,7 @@ describe("Auth User", function () {
             }
         });
     }); });
-    it("should not be able to authenticate user with incorrect password", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it("should return USER_NOT_FOUND if incorrect password", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -90,6 +96,27 @@ describe("Auth User", function () {
                             email: "iago@gmail.com",
                             password: "109238102938102",
                         })).rejects.toEqual(new DomainError_1.DomainError("USER_NOT_FOUND"))];
+                case 1:
+                    _a.sent();
+                    expect(usersRepository.findByEmail).toHaveBeenCalledWith("iago@gmail.com");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("shoult return ALREADY_LOGGED if logged_token is valid", function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
+                        id: "-1",
+                        password: passwordHash,
+                        email: "iago@gmail.com",
+                        logged_token: token,
+                    });
+                    return [4 /*yield*/, expect(authenticateUserUseCase.execute({
+                            email: "iago@gmail.com",
+                            password: "109238102938102",
+                        })).rejects.toEqual(new DomainError_1.DomainError("ALREADY_LOGGED"))];
                 case 1:
                     _a.sent();
                     expect(usersRepository.findByEmail).toHaveBeenCalledWith("iago@gmail.com");
