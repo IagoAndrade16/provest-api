@@ -35,7 +35,7 @@ class User {
   @JoinTable({
     name: "courses",
     joinColumns: [{ name: "user_id" }],
-    inverseJoinColumns: [{ name: "course_id" }],
+    inverseJoinColumns: [{ name: "id" }],
   })
   courses: Course[];
 
