@@ -1,7 +1,7 @@
 import { DomainError } from "@errors/DomainError";
 import { JwtProvider, JwtProviderAlias } from "@infra/providers/JwtProvider";
+import { Course } from "@modules/courses/entities/Course";
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
-import { User } from "@modules/users/entities/User";
 import { compare } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
 
@@ -17,7 +17,14 @@ export type AuthUserUseCaseOutPut = {
     token: string;
     expInMinutes: string;
   };
-  user: User;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    created_at: Date;
+    updated_at: Date;
+    courses: Course[];
+  };
 };
 
 @injectable()
@@ -55,9 +62,6 @@ class AuthenticateUserUseCase {
       throw new DomainError("USER_NOT_FOUND", 400);
     }
 
-    const user_courses = await this.coursesRepository.findByUserId(user.id);
-    user.courses = user_courses;
-
     const token = this.jwtProvider.generate(user.id);
 
     await this.usersRepository.update({ logged_token: token }, user.id);
@@ -67,7 +71,14 @@ class AuthenticateUserUseCase {
         token,
         expInMinutes: process.env.JWT_EXPIRES_TOKEN_IN_MINUTES,
       },
-      user,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        courses: user.courses,
+        created_at: user.created_at,
+        updated_at: user.updated_at,
+      },
     };
   }
 }

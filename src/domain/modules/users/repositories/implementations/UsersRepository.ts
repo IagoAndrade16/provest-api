@@ -23,9 +23,8 @@ class UsersRepository implements IUsersRepository {
 
   async findByEmail(email: string): Promise<User | undefined> {
     const user = await this.repository.findOne({
-      where: {
-        email,
-      },
+      where: { email },
+      relations: ["courses"],
     });
 
     return user;
