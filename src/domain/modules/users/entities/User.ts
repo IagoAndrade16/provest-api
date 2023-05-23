@@ -42,6 +42,9 @@ class User {
   @Column({ type: "varchar" })
   logged_token: string | null;
 
+  @Column({ type: "varchar", length: 255 })
+  avatar_url: string | null;
+
   constructor() {
     if (!this.id) {
       this.id = uuidV4();
