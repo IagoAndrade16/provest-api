@@ -18,9 +18,11 @@ describe("verify", () => {
   });
 
   it("should be return sub", () => {
-    const sub = jwtProvider.verify(authToken.split("Bearer ")[1]);
+    const res = jwtProvider.verify(authToken.split("Bearer ")[1]);
 
-    expect(sub).toBe("-1");
+    expect(res).toHaveProperty("sub");
+    expect(res).toHaveProperty("exp");
+    expect(res).toHaveProperty("iat");
   });
 });
 

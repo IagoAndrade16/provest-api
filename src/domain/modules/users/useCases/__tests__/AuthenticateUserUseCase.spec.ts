@@ -5,6 +5,7 @@ import { User } from "@modules/users/entities/User";
 import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
 import { hash } from "bcryptjs";
 
+import { TestUtils } from "../../../../utils/TestUtils";
 import { AuthenticateUserUseCase } from "../AuthenticateUserUseCase";
 
 let usersRepository: UsersRepositoryInMemory;
@@ -13,6 +14,7 @@ let coursesRepository: CoursesRepositoryInMemory;
 let jwtProvider: JwtProviderImpl;
 
 let passwordHash: string;
+let token: string;
 
 beforeAll(async () => {
   usersRepository = new UsersRepositoryInMemory();
@@ -24,10 +26,11 @@ beforeAll(async () => {
     jwtProvider
   );
   passwordHash = await hash("123456", 8);
+  [, token] = (await TestUtils.generateBearerToken("-1")).split(" ");
 });
 
 describe("Auth User", () => {
-  it("should not be able to authenticate user with incorrect email", async () => {
+  it("should return USER_NOT_FOUND if incorrect email", async () => {
     jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce(null);
 
     await expect(
@@ -42,7 +45,7 @@ describe("Auth User", () => {
     );
   });
 
-  it("should not be able to authenticate user with incorrect password", async () => {
+  it("should return USER_NOT_FOUND if incorrect password", async () => {
     jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
       password: passwordHash,
     } as User);
@@ -53,6 +56,24 @@ describe("Auth User", () => {
         password: "109238102938102",
       })
     ).rejects.toEqual(new DomainError("USER_NOT_FOUND"));
+
+    expect(usersRepository.findByEmail).toHaveBeenCalledWith("iago@gmail.com");
+  });
+
+  it("shoult return ALREADY_LOGGED if logged_token is valid", async () => {
+    jest.spyOn(usersRepository, "findByEmail").mockResolvedValueOnce({
+      id: "-1",
+      password: passwordHash,
+      email: "iago@gmail.com",
+      logged_token: token,
+    } as User);
+
+    await expect(
+      authenticateUserUseCase.execute({
+        email: "iago@gmail.com",
+        password: "109238102938102",
+      })
+    ).rejects.toEqual(new DomainError("ALREADY_LOGGED"));
 
     expect(usersRepository.findByEmail).toHaveBeenCalledWith("iago@gmail.com");
   });

@@ -7,7 +7,7 @@ import { v4 as uuidV4 } from "uuid";
 
 let connection: DataSource;
 
-const route = "/users/session";
+const route = "/users/auth";
 
 beforeAll(async () => {
   connection = await AppDataSource.initialize();

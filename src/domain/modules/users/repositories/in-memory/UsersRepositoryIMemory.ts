@@ -16,6 +16,7 @@ class UsersRepositoryInMemory implements IUsersRepository {
       created_at: new Date(),
       updated_at: new Date(),
       courses: [],
+      logged_token: null,
     };
 
     Object.assign(user, {
@@ -26,6 +27,7 @@ class UsersRepositoryInMemory implements IUsersRepository {
       created_at: user.created_at,
       updated_at: user.updated_at,
       courses: [],
+      logged_token: null,
     });
 
     this.users.push(user);

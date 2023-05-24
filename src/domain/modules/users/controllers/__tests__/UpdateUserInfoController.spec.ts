@@ -3,18 +3,22 @@ import { AppDataSource } from "@infra/database";
 import { hash } from "bcryptjs";
 import request from "supertest";
 import { DataSource } from "typeorm";
-import { v4 as uuidV4 } from "uuid";
+import { v4 as uuid } from "uuid";
+
+import { TestUtils } from "../../../../utils/TestUtils";
 
 let connection: DataSource;
-const authRoute = "/users/session";
 const route = "/users";
+
+let token: string;
 
 beforeAll(async () => {
   connection = await AppDataSource.initialize();
   await connection.runMigrations();
 
-  const id = uuidV4();
+  const id = uuid();
   const password = await hash("admin", 8);
+  token = await TestUtils.generateBearerToken(id);
 
   await connection.query(
     `INSERT INTO USERS(id, name, email, password, created_at, updated_at)
@@ -30,20 +34,13 @@ afterAll(async () => {
 
 describe("Schema validation", () => {
   it("should require optional parameters when passed", async () => {
-    const authRes = await request(app).post(authRoute).send({
-      email: "admin@provest.com.br",
-      password: "admin",
-    });
-
-    const { token } = authRes.body.auth;
-
     const response = await request(app)
       .patch(route)
       .send({
         email: null,
         name: null,
       })
-      .set({ Authorization: `Bearer ${token}` });
+      .set({ Authorization: token });
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty("email");
@@ -51,16 +48,9 @@ describe("Schema validation", () => {
   });
   describe("email", () => {
     it("should require a valid email", async () => {
-      const authRes = await request(app).post(authRoute).send({
-        email: "admin@provest.com.br",
-        password: "admin",
-      });
-
-      const { token } = authRes.body.auth;
-
       const response = await request(app)
         .patch(route)
-        .set({ Authorization: `Bearer ${token}` })
+        .set({ Authorization: token })
         .send({
           email: "invalid email",
         });
@@ -71,17 +61,10 @@ describe("Schema validation", () => {
     });
 
     it("should require a valid email length", async () => {
-      const authRes = await request(app).post(authRoute).send({
-        email: "admin@provest.com.br",
-        password: "admin",
-      });
-
-      const { token } = authRes.body.auth;
-
       const response = await request(app)
         .patch(route)
         .set({
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         })
         .send({
           email: `iago${"a".repeat(255)}@gmail.com`,
@@ -95,17 +78,10 @@ describe("Schema validation", () => {
 
   describe("name", () => {
     it("should require a valid name length", async () => {
-      const authRes = await request(app).post(authRoute).send({
-        email: "admin@provest.com.br",
-        password: "admin",
-      });
-
-      const { token } = authRes.body.auth;
-
       const response = await request(app)
         .patch(route)
         .set({
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         })
         .send({
           name: "a".repeat(256),
@@ -120,19 +96,12 @@ describe("Schema validation", () => {
 
 describe("Return values", () => {
   it("should be able to alter user profile", async () => {
-    const authRes = await request(app).post(authRoute).send({
-      email: "admin@provest.com.br",
-      password: "admin",
-    });
-
-    const { token } = authRes.body.auth;
-
     const response = await request(app)
       .patch(route)
       .send({
         email: "admin@admin.com",
       })
-      .set({ Authorization: `Bearer ${token}` });
+      .set({ Authorization: token });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({

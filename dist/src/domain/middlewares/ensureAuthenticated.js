@@ -50,7 +50,7 @@ function ensureAuthenticated(request, response, next) {
             }
             _a = authHeader.split("Bearer "), token = _a[1];
             try {
-                userId = jwtProvider.verify(token);
+                userId = jwtProvider.verify(token).sub;
                 request.user = {
                     id: userId,
                 };

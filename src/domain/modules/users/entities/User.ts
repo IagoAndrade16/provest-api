@@ -35,9 +35,15 @@ class User {
   @JoinTable({
     name: "courses",
     joinColumns: [{ name: "user_id" }],
-    inverseJoinColumns: [{ name: "course_id" }],
+    inverseJoinColumns: [{ name: "id" }],
   })
   courses: Course[];
+
+  @Column({ type: "varchar" })
+  logged_token: string | null;
+
+  @Column({ type: "varchar", length: 255 })
+  avatar_url: string | null;
 
   constructor() {
     if (!this.id) {

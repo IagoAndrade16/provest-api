@@ -102,6 +102,10 @@ var User = /** @class */ (function () {
         }),
         __metadata("design:type", Array)
     ], User.prototype, "courses", void 0);
+    __decorate([
+        (0, typeorm_1.Column)({ type: "varchar" }),
+        __metadata("design:type", String)
+    ], User.prototype, "logged_token", void 0);
     User = __decorate([
         (0, typeorm_1.Entity)("users"),
         __metadata("design:paramtypes", [])
