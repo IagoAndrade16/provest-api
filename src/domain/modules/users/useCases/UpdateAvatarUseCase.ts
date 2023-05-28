@@ -31,9 +31,12 @@ export class UpdateAvatarUseCase {
       await this.storageProvider.delete(user.avatar_url, "avatar");
     }
 
-    const saveAvatarInAws = this.storageProvider.save(input.avatar, "avatar");
-    const updateUserAvatar = this.usersRepository.update(
-      { avatar_url: input.avatar },
+    const saveAvatarInAws = await this.storageProvider.save(
+      input.avatar,
+      "avatar"
+    );
+    const updateUserAvatar = await this.usersRepository.update(
+      { avatar_url: saveAvatarInAws },
       input.userId
     );
 

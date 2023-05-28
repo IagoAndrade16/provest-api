@@ -40,7 +40,7 @@ usersRoutes.patch(
 usersRoutes.patch("/logout", ensureAuthenticated, logoutUserController.handle);
 usersRoutes.patch("/", ensureAuthenticated, updateUserInfoController.handle);
 usersRoutes.patch(
-  "/avatar_url",
+  "/avatar-url",
   ensureAuthenticated,
   upload.single("avatar"),
   updateAvatarController.handle

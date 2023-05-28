@@ -75,9 +75,8 @@ var UsersRepository = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.repository.findOne({
-                            where: {
-                                email: email,
-                            },
+                            where: { email: email },
+                            relations: ["courses"],
                         })];
                     case 1:
                         user = _a.sent();

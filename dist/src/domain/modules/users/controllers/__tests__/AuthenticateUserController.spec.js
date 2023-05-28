@@ -45,7 +45,7 @@ var bcryptjs_1 = require("bcryptjs");
 var supertest_1 = __importDefault(require("supertest"));
 var uuid_1 = require("uuid");
 var connection;
-var route = "/users/session";
+var route = "/users/auth";
 beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     var id, password;
     return __generator(this, function (_a) {
