@@ -20,7 +20,7 @@ export class S3ProviderImpl implements S3Provider {
 
     const ContentType = mime.getType(originalName);
 
-    await this.client
+    const saveObjectInS3 = this.client
       .putObject({
         Bucket: `${process.env.AWS_BUCKET}/${folder}`,
         Key: file,
@@ -30,11 +30,15 @@ export class S3ProviderImpl implements S3Provider {
       })
       .promise();
 
-    await fs.promises.unlink(originalName);
+    const removeLocalObject = fs.promises.unlink(originalName);
 
-    return file;
+    await Promise.all([saveObjectInS3, removeLocalObject]);
+
+    return process.env.AWS_LINK_TO_FILE + file;
   }
-  async delete(file: string, folder: string): Promise<void> {
+  async delete(fileUrl: string, folder: string): Promise<void> {
+    const [, file] = fileUrl.split("avatar/");
+
     await this.client
       .deleteObject({
         Bucket: `${process.env.AWS_BUCKET}/${folder}`,

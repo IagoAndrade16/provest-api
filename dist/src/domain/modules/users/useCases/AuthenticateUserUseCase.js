@@ -62,7 +62,7 @@ var AuthenticateUserUseCase = /** @class */ (function () {
     AuthenticateUserUseCase.prototype.execute = function (_a) {
         var email = _a.email, password = _a.password;
         return __awaiter(this, void 0, void 0, function () {
-            var user, validToken, passwordMatch, user_courses, token;
+            var user, validToken, passwordMatch, token;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.usersRepository.findByEmail(email)];
@@ -83,20 +83,23 @@ var AuthenticateUserUseCase = /** @class */ (function () {
                         if (!passwordMatch) {
                             throw new DomainError_1.DomainError("USER_NOT_FOUND", 400);
                         }
-                        return [4 /*yield*/, this.coursesRepository.findByUserId(user.id)];
-                    case 3:
-                        user_courses = _b.sent();
-                        user.courses = user_courses;
                         token = this.jwtProvider.generate(user.id);
                         return [4 /*yield*/, this.usersRepository.update({ logged_token: token }, user.id)];
-                    case 4:
+                    case 3:
                         _b.sent();
                         return [2 /*return*/, {
                                 auth: {
                                     token: token,
                                     expInMinutes: process.env.JWT_EXPIRES_TOKEN_IN_MINUTES,
                                 },
-                                user: user,
+                                user: {
+                                    id: user.id,
+                                    name: user.name,
+                                    email: user.email,
+                                    courses: user.courses,
+                                    created_at: user.created_at,
+                                    updated_at: user.updated_at,
+                                },
                             }];
                 }
             });

@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRoutes = void 0;
 var AuthenticateUserController_1 = require("@modules/users/controllers/AuthenticateUserController");
@@ -6,20 +9,26 @@ var CreateUserController_1 = require("@modules/users/controllers/CreateUserContr
 var ForgotPasswordController_1 = require("@modules/users/controllers/ForgotPasswordController");
 var LogoutUserController_1 = require("@modules/users/controllers/LogoutUserController");
 var ResetPasswordController_1 = require("@modules/users/controllers/ResetPasswordController");
+var UpdateAvatarController_1 = require("@modules/users/controllers/UpdateAvatarController");
 var UpdateUserInfoController_1 = require("@modules/users/controllers/UpdateUserInfoController");
 var express_1 = require("express");
+var multer_1 = __importDefault(require("multer"));
 var ensureAuthenticated_1 = require("../middlewares/ensureAuthenticated");
+var uploadFile_1 = __importDefault(require("../middlewares/uploadFile"));
 var createUserController = new CreateUserController_1.CreateUserController();
 var authenticateUserController = new AuthenticateUserController_1.AuthenticateUserController();
 var updateUserInfoController = new UpdateUserInfoController_1.UpdateUserInfoController();
 var forgotPasswordController = new ForgotPasswordController_1.ForgotPasswordController();
 var resetPasswordController = new ResetPasswordController_1.ResetPasswordController();
 var logoutUserController = new LogoutUserController_1.LogoutUserController();
+var updateAvatarController = new UpdateAvatarController_1.UpdateAvatarController();
 var usersRoutes = (0, express_1.Router)();
 exports.usersRoutes = usersRoutes;
+var upload = (0, multer_1.default)(uploadFile_1.default);
 usersRoutes.post("/", createUserController.handle);
 usersRoutes.post("/auth", authenticateUserController.handle);
-usersRoutes.patch("/", ensureAuthenticated_1.ensureAuthenticated, updateUserInfoController.handle);
 usersRoutes.get("/forgot-password", ensureAuthenticated_1.ensureAuthenticated, forgotPasswordController.handle);
 usersRoutes.patch("/reset-password", ensureAuthenticated_1.ensureAuthenticated, resetPasswordController.handle);
 usersRoutes.patch("/logout", ensureAuthenticated_1.ensureAuthenticated, logoutUserController.handle);
+usersRoutes.patch("/", ensureAuthenticated_1.ensureAuthenticated, updateUserInfoController.handle);
+usersRoutes.patch("/avatar-url", ensureAuthenticated_1.ensureAuthenticated, upload.single("avatar"), updateAvatarController.handle);

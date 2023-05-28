@@ -98,7 +98,7 @@ var User = /** @class */ (function () {
         (0, typeorm_1.JoinTable)({
             name: "courses",
             joinColumns: [{ name: "user_id" }],
-            inverseJoinColumns: [{ name: "course_id" }],
+            inverseJoinColumns: [{ name: "id" }],
         }),
         __metadata("design:type", Array)
     ], User.prototype, "courses", void 0);
@@ -106,6 +106,10 @@ var User = /** @class */ (function () {
         (0, typeorm_1.Column)({ type: "varchar" }),
         __metadata("design:type", String)
     ], User.prototype, "logged_token", void 0);
+    __decorate([
+        (0, typeorm_1.Column)({ type: "varchar", length: 255 }),
+        __metadata("design:type", String)
+    ], User.prototype, "avatar_url", void 0);
     User = __decorate([
         (0, typeorm_1.Entity)("users"),
         __metadata("design:paramtypes", [])

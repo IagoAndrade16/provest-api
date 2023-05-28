@@ -44,9 +44,10 @@ var database_1 = require("@infra/database");
 var bcryptjs_1 = require("bcryptjs");
 var supertest_1 = __importDefault(require("supertest"));
 var uuid_1 = require("uuid");
+var TestUtils_1 = require("../../../../utils/TestUtils");
 var connection;
-var authRoute = "/users/session";
 var route = "/users";
+var token;
 beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     var id, password;
     return __generator(this, function (_a) {
@@ -61,8 +62,11 @@ beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
                 return [4 /*yield*/, (0, bcryptjs_1.hash)("admin", 8)];
             case 3:
                 password = _a.sent();
-                return [4 /*yield*/, connection.query("INSERT INTO USERS(id, name, email, password, created_at, updated_at)\n      values('".concat(id, "', 'Controller', 'admin@provest.com.br', '").concat(password, "', 'now()', 'now()')\n    "))];
+                return [4 /*yield*/, TestUtils_1.TestUtils.generateBearerToken(id)];
             case 4:
+                token = _a.sent();
+                return [4 /*yield*/, connection.query("INSERT INTO USERS(id, name, email, password, created_at, updated_at)\n      values('".concat(id, "', 'Controller', 'admin@provest.com.br', '").concat(password, "', 'now()', 'now()')\n    "))];
+            case 5:
                 _a.sent();
                 return [2 /*return*/];
         }
@@ -83,24 +87,17 @@ afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
 }); });
 describe("Schema validation", function () {
     it("should require optional parameters when passed", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var authRes, token, response;
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(authRoute).send({
-                        email: "admin@provest.com.br",
-                        password: "admin",
-                    })];
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                        .patch(route)
+                        .send({
+                        email: null,
+                        name: null,
+                    })
+                        .set({ Authorization: token })];
                 case 1:
-                    authRes = _a.sent();
-                    token = authRes.body.auth.token;
-                    return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
-                            .patch(route)
-                            .send({
-                            email: null,
-                            name: null,
-                        })
-                            .set({ Authorization: "Bearer ".concat(token) })];
-                case 2:
                     response = _a.sent();
                     expect(response.status).toBe(400);
                     expect(response.body).toHaveProperty("email");
@@ -111,23 +108,16 @@ describe("Schema validation", function () {
     }); });
     describe("email", function () {
         it("should require a valid email", function () { return __awaiter(void 0, void 0, void 0, function () {
-            var authRes, token, response;
+            var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(authRoute).send({
-                            email: "admin@provest.com.br",
-                            password: "admin",
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                            .patch(route)
+                            .set({ Authorization: token })
+                            .send({
+                            email: "invalid email",
                         })];
                     case 1:
-                        authRes = _a.sent();
-                        token = authRes.body.auth.token;
-                        return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
-                                .patch(route)
-                                .set({ Authorization: "Bearer ".concat(token) })
-                                .send({
-                                email: "invalid email",
-                            })];
-                    case 2:
                         response = _a.sent();
                         expect(response.status).toBe(400);
                         expect(response.body).toHaveProperty("email");
@@ -137,25 +127,18 @@ describe("Schema validation", function () {
             });
         }); });
         it("should require a valid email length", function () { return __awaiter(void 0, void 0, void 0, function () {
-            var authRes, token, response;
+            var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(authRoute).send({
-                            email: "admin@provest.com.br",
-                            password: "admin",
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                            .patch(route)
+                            .set({
+                            Authorization: token,
+                        })
+                            .send({
+                            email: "iago".concat("a".repeat(255), "@gmail.com"),
                         })];
                     case 1:
-                        authRes = _a.sent();
-                        token = authRes.body.auth.token;
-                        return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
-                                .patch(route)
-                                .set({
-                                Authorization: "Bearer ".concat(token),
-                            })
-                                .send({
-                                email: "iago".concat("a".repeat(255), "@gmail.com"),
-                            })];
-                    case 2:
                         response = _a.sent();
                         expect(response.status).toBe(400);
                         expect(response.body).toHaveProperty("email");
@@ -167,25 +150,18 @@ describe("Schema validation", function () {
     });
     describe("name", function () {
         it("should require a valid name length", function () { return __awaiter(void 0, void 0, void 0, function () {
-            var authRes, token, response;
+            var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(authRoute).send({
-                            email: "admin@provest.com.br",
-                            password: "admin",
+                    case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                            .patch(route)
+                            .set({
+                            Authorization: token,
+                        })
+                            .send({
+                            name: "a".repeat(256),
                         })];
                     case 1:
-                        authRes = _a.sent();
-                        token = authRes.body.auth.token;
-                        return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
-                                .patch(route)
-                                .set({
-                                Authorization: "Bearer ".concat(token),
-                            })
-                                .send({
-                                name: "a".repeat(256),
-                            })];
-                    case 2:
                         response = _a.sent();
                         expect(response.status).toBe(400);
                         expect(response.body).toHaveProperty("name");
@@ -198,23 +174,16 @@ describe("Schema validation", function () {
 });
 describe("Return values", function () {
     it("should be able to alter user profile", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var authRes, token, response;
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app).post(authRoute).send({
-                        email: "admin@provest.com.br",
-                        password: "admin",
-                    })];
+                case 0: return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
+                        .patch(route)
+                        .send({
+                        email: "admin@admin.com",
+                    })
+                        .set({ Authorization: token })];
                 case 1:
-                    authRes = _a.sent();
-                    token = authRes.body.auth.token;
-                    return [4 /*yield*/, (0, supertest_1.default)(app_1.app)
-                            .patch(route)
-                            .send({
-                            email: "admin@admin.com",
-                        })
-                            .set({ Authorization: "Bearer ".concat(token) })];
-                case 2:
                     response = _a.sent();
                     expect(response.status).toBe(200);
                     expect(response.body).toEqual({

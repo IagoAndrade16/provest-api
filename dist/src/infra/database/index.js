@@ -11,6 +11,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DATABASE,
+    logging: false,
     entities: ["./src/domain/modules/**/entities/*.ts"],
     migrations: ["./src/infra/database/migrations/*.ts"],
     migrationsTableName: "migrations",
