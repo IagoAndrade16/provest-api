@@ -2,8 +2,10 @@ import { DomainError } from "@errors/DomainError";
 import { S3Provider, S3ProviderAlias } from "@infra/providers/S3Provider";
 import { inject, singleton } from "tsyringe";
 
-import { UsersRepository } from "../repositories/implementations/UsersRepository";
-import { usersRepositoryAlias } from "../repositories/IUsersRepository";
+import {
+  IUsersRepository,
+  usersRepositoryAlias,
+} from "../repositories/IUsersRepository";
 
 type UpdateAvatarInput = {
   userId: string;
@@ -14,10 +16,10 @@ type UpdateAvatarInput = {
 export class UpdateAvatarUseCase {
   constructor(
     @inject(usersRepositoryAlias)
-    private usersRepository: UsersRepository,
+    private usersRepository: IUsersRepository,
 
     @inject(S3ProviderAlias)
-    private storageProvider: S3Provider
+    private s3Provider: S3Provider
   ) {}
 
   async execute(input: UpdateAvatarInput): Promise<void> {
@@ -28,13 +30,10 @@ export class UpdateAvatarUseCase {
     }
 
     if (user.avatar_url) {
-      await this.storageProvider.delete(user.avatar_url, "avatar");
+      await this.s3Provider.delete(user.avatar_url, "avatar");
     }
 
-    const saveAvatarInAws = await this.storageProvider.save(
-      input.avatar,
-      "avatar"
-    );
+    const saveAvatarInAws = await this.s3Provider.save(input.avatar, "avatar");
     const updateUserAvatar = await this.usersRepository.update(
       { avatar_url: saveAvatarInAws },
       input.userId
