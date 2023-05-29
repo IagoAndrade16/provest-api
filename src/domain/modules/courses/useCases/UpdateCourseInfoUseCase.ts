@@ -1,9 +1,9 @@
 import { DomainError } from "@errors/DomainError";
 import { IUpdateCourseDTO } from "@modules/courses/dtos/IUpdateCourseDTO";
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
-@injectable()
+@singleton()
 export class UpdateCourseInfoUseCase {
   constructor(
     @inject("CoursesRepository")

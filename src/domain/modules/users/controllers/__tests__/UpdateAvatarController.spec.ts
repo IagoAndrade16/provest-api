@@ -54,6 +54,8 @@ describe("Return values", () => {
       })
       .attach("avatar", `${__dirname}/temp/foto_teste_sds.jpeg`);
 
+    console.log(response.body);
+
     expect(response.status).toBe(200);
   });
 });

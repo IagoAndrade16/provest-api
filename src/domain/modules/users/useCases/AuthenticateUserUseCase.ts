@@ -3,7 +3,7 @@ import { JwtProvider, JwtProviderAlias } from "@infra/providers/JwtProvider";
 import { Course } from "@modules/courses/entities/Course";
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
 import { compare } from "bcryptjs";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
 import { IUsersRepository } from "../repositories/IUsersRepository";
 
@@ -27,7 +27,7 @@ export type AuthUserUseCaseOutPut = {
   };
 };
 
-@injectable()
+@singleton()
 class AuthenticateUserUseCase {
   constructor(
     @inject("UsersRepository")

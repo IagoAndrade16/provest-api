@@ -106,7 +106,7 @@ var AuthenticateUserUseCase = /** @class */ (function () {
         });
     };
     AuthenticateUserUseCase = __decorate([
-        (0, tsyringe_1.injectable)(),
+        singleton(),
         __param(0, (0, tsyringe_1.inject)("UsersRepository")),
         __param(1, (0, tsyringe_1.inject)("CoursesRepository")),
         __param(2, (0, tsyringe_1.inject)(JwtProvider_1.JwtProviderAlias)),

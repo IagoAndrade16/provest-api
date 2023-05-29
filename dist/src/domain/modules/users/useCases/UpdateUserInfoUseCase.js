@@ -75,7 +75,7 @@ var UpdateUserInfoUseCase = /** @class */ (function () {
         });
     };
     UpdateUserInfoUseCase = __decorate([
-        (0, tsyringe_1.injectable)(),
+        singleton(),
         __param(0, (0, tsyringe_1.inject)("UsersRepository")),
         __metadata("design:paramtypes", [Object])
     ], UpdateUserInfoUseCase);
