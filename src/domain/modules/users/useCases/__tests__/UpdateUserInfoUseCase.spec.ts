@@ -1,11 +1,12 @@
 import { DomainError } from "@errors/DomainError";
 import { User } from "@modules/users/entities/User";
 import { UsersRepositoryInMemory } from "@modules/users/repositories/in-memory/UsersRepositoryIMemory";
+import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
 
 import { UpdateUserInfoUseCase } from "../UpdateUserInfoUseCase";
 
 let useCase: UpdateUserInfoUseCase;
-let usersRepository: UsersRepositoryInMemory;
+let usersRepository: IUsersRepository;
 
 beforeEach(() => {
   usersRepository = new UsersRepositoryInMemory();
