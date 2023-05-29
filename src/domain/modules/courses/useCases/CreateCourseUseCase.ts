@@ -1,10 +1,10 @@
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
 import { ICreateCourseDTO } from "../dtos/ICreateCourseDTO";
 import { Course } from "../entities/Course";
 
-@injectable()
+@singleton()
 export class CreateCourseUseCase {
   constructor(
     @inject("CoursesRepository")

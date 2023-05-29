@@ -1,10 +1,10 @@
 import { DomainError } from "@errors/DomainError";
 import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
 import { IUpdateUserDTO } from "../dtos/IUpdateUserDTO";
 
-@injectable()
+@singleton()
 export class UpdateUserInfoUseCase {
   constructor(
     @inject("UsersRepository")

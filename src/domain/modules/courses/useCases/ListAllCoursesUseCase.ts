@@ -1,8 +1,8 @@
 import { Course } from "@modules/courses/entities/Course";
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
-@injectable()
+@singleton()
 export class ListAllCoursesUseCase {
   constructor(
     @inject("CoursesRepository")

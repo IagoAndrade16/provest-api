@@ -1,10 +1,10 @@
 import { DomainError } from "@errors/DomainError";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
 import { UsersRepository } from "../repositories/implementations/UsersRepository";
 import { usersRepositoryAlias } from "../repositories/IUsersRepository";
 
-@injectable()
+@singleton()
 export class LogoutUserUseCase {
   constructor(
     @inject(usersRepositoryAlias)

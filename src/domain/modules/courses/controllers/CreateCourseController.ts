@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { container, injectable } from "tsyringe";
+import { container } from "tsyringe";
 import * as yup from "yup";
 
 import { CreateCourseUseCase } from "../useCases/CreateCourseUseCase";
@@ -24,7 +24,6 @@ const bodySchema = yup.object().shape({
   link: yup.string().required("link is a required field").url(),
 });
 
-@injectable()
 export class CreateCourseController {
   async handle(req: Request, res: Response): Promise<Response> {
     const input = (await bodySchema.validate(req.body, {

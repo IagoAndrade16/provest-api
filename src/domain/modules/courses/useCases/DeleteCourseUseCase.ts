@@ -1,13 +1,13 @@
 import { DomainError } from "@errors/DomainError";
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
 export type DeleteCourseInput = {
   user_id: string;
   course_id: string;
 };
 
-@injectable()
+@singleton()
 export class DeleteCourseUseCase {
   constructor(
     @inject("CoursesRepository")

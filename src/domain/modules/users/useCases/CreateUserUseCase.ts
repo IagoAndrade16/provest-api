@@ -1,6 +1,6 @@
 import { DomainError } from "@errors/DomainError";
 import { hash } from "bcryptjs";
-import { inject, injectable } from "tsyringe";
+import { inject, singleton } from "tsyringe";
 
 import { User } from "../entities/User";
 import { IUsersRepository } from "../repositories/IUsersRepository";
@@ -11,7 +11,7 @@ export type CreateUserInput = {
   email: string;
 };
 
-@injectable()
+@singleton()
 class CreateUserUseCase {
   constructor(
     @inject("UsersRepository")

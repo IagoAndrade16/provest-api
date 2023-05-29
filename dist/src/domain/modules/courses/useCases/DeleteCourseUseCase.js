@@ -79,7 +79,7 @@ var DeleteCourseUseCase = /** @class */ (function () {
         });
     };
     DeleteCourseUseCase = __decorate([
-        (0, tsyringe_1.injectable)(),
+        (0, tsyringe_1.singleton)(),
         __param(0, (0, tsyringe_1.inject)("CoursesRepository")),
         __metadata("design:paramtypes", [Object])
     ], DeleteCourseUseCase);

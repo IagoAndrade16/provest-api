@@ -1,7 +1,7 @@
 import { JwtProviderImpl } from "@infra/providers/implementations/JwtProviderImpl";
-import { injectable } from "tsyringe";
+import { singleton } from "tsyringe";
 
-@injectable()
+@singleton()
 export class TestUtils {
   static async generateBearerToken(userId: string): Promise<string> {
     const jwtProvider = new JwtProviderImpl();
